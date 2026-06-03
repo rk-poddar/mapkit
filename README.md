@@ -27,3 +27,7 @@ pnpm --filter @map-kit/example-next-basic dev
 Leaflet docs:
 
 - `docs/LEAFLET_QUICKSTART.md`
+
+MapLibre docs:
+
+- `docs/MAPLIBRE_QUICKSTART.md`
