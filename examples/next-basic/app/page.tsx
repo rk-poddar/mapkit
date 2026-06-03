@@ -1,18 +1,43 @@
 "use client";
 
 import { leafletAdapter } from "@map-kit/leaflet";
-import { Circle, FitBounds, Map, Marker, Route } from "@map-kit/react";
+import { Circle, FitBounds, Map, Marker, Polygon, Popup, Route } from "@map-kit/react";
+import { useState } from "react";
 
 const delhi = [28.6139, 77.209] as const;
 const gurugram = [28.4595, 77.0266] as const;
 const noida = [28.5355, 77.391] as const;
+const faridabad = [28.4089, 77.3178] as const;
 
 const route = [gurugram, delhi, noida];
+const alternateRoute = [gurugram, faridabad, noida];
+const polygon = [gurugram, delhi, noida, faridabad];
 
 export default function HomePage() {
+  const [showMarker, setShowMarker] = useState(true);
+  const [showRoute, setShowRoute] = useState(true);
+  const [showCircle, setShowCircle] = useState(true);
+  const [showPolygon, setShowPolygon] = useState(false);
+  const [useAlternateRoute, setUseAlternateRoute] = useState(false);
+
   return (
     <main className="page-shell">
       <section className="map-panel">
+        <div className="map-toolbar">
+          <button onClick={() => setShowMarker((value) => !value)}>
+            {showMarker ? "Hide" : "Show"} marker
+          </button>
+          <button onClick={() => setShowRoute((value) => !value)}>
+            {showRoute ? "Hide" : "Show"} route
+          </button>
+          <button onClick={() => setUseAlternateRoute((value) => !value)}>Update route</button>
+          <button onClick={() => setShowCircle((value) => !value)}>
+            {showCircle ? "Hide" : "Show"} circle
+          </button>
+          <button onClick={() => setShowPolygon((value) => !value)}>
+            {showPolygon ? "Hide" : "Show"} polygon
+          </button>
+        </div>
         <Map
           adapter={leafletAdapter}
           className="map-canvas"
@@ -22,23 +47,46 @@ export default function HomePage() {
           zoom={10}
         >
           <FitBounds bounds={[gurugram, noida]} options={{ padding: 40 }} />
-          <Route id="ncr-route" coordinates={route} color="#2563eb" width={5} />
-          <Circle
-            id="delhi-service-area"
-            center={delhi}
-            radius={7000}
-            color="#0f766e"
-            fillColor="#14b8a6"
-            fillOpacity={0.18}
-          />
-          <Marker
-            id="delhi"
-            position={delhi}
-            title="New Delhi"
-            description="Map Kit Leaflet marker"
-          />
-          <Marker id="gurugram" position={gurugram} title="Gurugram" />
-          <Marker id="noida" position={noida} title="Noida" />
+          {showRoute ? (
+            <Route
+              id="ncr-route"
+              coordinates={useAlternateRoute ? alternateRoute : route}
+              color={useAlternateRoute ? "#7c3aed" : "#2563eb"}
+              width={5}
+            />
+          ) : null}
+          {showCircle ? (
+            <Circle
+              id="delhi-service-area"
+              center={delhi}
+              radius={showPolygon ? 9000 : 7000}
+              color="#0f766e"
+              fillColor="#14b8a6"
+              fillOpacity={0.18}
+            />
+          ) : null}
+          {showPolygon ? (
+            <Polygon
+              id="ncr-polygon"
+              coordinates={polygon}
+              color="#f97316"
+              fillColor="#fb923c"
+              fillOpacity={0.16}
+            />
+          ) : null}
+          {showMarker ? (
+            <Marker
+              id="delhi"
+              position={delhi}
+              title="New Delhi"
+              description="Map Kit Leaflet marker"
+              color={useAlternateRoute ? "#7c3aed" : "#2563eb"}
+            >
+              <Popup>Declarative popup content from Marker children.</Popup>
+            </Marker>
+          ) : null}
+          <Marker id="gurugram" position={gurugram} title="Gurugram" color="#0f766e" />
+          <Marker id="noida" position={noida} title="Noida" color="#dc2626" />
         </Map>
       </section>
     </main>

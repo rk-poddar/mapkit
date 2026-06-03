@@ -74,6 +74,10 @@ export type MarkerProps = MarkerModel & {
   children?: ReactNode;
 };
 
+export type PopupProps = {
+  children: ReactNode;
+};
+
 export type RouteProps = RouteModel;
 
 export type CircleProps = CircleModel;

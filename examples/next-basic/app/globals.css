@@ -23,12 +23,47 @@ body {
 }
 
 .map-panel {
+  position: relative;
   overflow: hidden;
   min-height: 560px;
   border: 1px solid #dbe3ef;
   border-radius: 8px;
   background: #ffffff;
   box-shadow: 0 18px 45px rgb(15 23 42 / 10%);
+}
+
+.map-toolbar {
+  position: absolute;
+  z-index: 1000;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: calc(100% - 32px);
+  padding: 8px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 12px 28px rgb(15 23 42 / 14%);
+}
+
+.map-toolbar button {
+  height: 34px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 12px;
+}
+
+.map-toolbar button:hover {
+  border-color: #2563eb;
+  color: #1d4ed8;
 }
 
 .map-canvas {

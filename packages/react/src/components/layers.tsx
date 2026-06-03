@@ -4,16 +4,35 @@ import type {
   CircleProps,
   MapLayerState,
   MarkerProps,
+  PopupProps,
   PolygonProps,
   RouteProps,
 } from "../types";
 
-export function Marker({ children: _children, ...model }: MarkerProps) {
-  const layer = useMemo<MapLayerState>(() => ({ kind: "marker", model }), [model]);
+const POPUP_TEXT_SEPARATOR = "\n";
+const POPUP_COMPONENT_NAME = "Popup";
+
+export function Marker({ children, ...model }: MarkerProps) {
+  const popup = extractPopupText(children);
+  const layer = useMemo<MapLayerState>(
+    () => ({
+      kind: "marker",
+      model: {
+        ...model,
+        popup: popup ?? model.popup,
+      },
+    }),
+    [model, popup],
+  );
   useLayer(layer);
 
   return null;
 }
+
+export function Popup(_props: PopupProps) {
+  return null;
+}
+Popup.displayName = POPUP_COMPONENT_NAME;
 
 export function Route(props: RouteProps) {
   const layer = useMemo<MapLayerState>(() => ({ kind: "route", model: props }), [props]);
@@ -55,4 +74,30 @@ function useLayer(layer: MapLayerState) {
   useEffect(() => {
     updateLayer(layerRef.current);
   }, [layerSignature, updateLayer]);
+}
+
+function extractPopupText(children: MarkerProps["children"]): string | undefined {
+  if (children === null || children === undefined || typeof children === "boolean") {
+    return undefined;
+  }
+
+  if (typeof children === "string" || typeof children === "number") {
+    return String(children);
+  }
+
+  if (Array.isArray(children)) {
+    return children.map(extractPopupText).filter(Boolean).join(POPUP_TEXT_SEPARATOR);
+  }
+
+  if (typeof children === "object" && "props" in children && "type" in children) {
+    const childType = children.type as { displayName?: string; name?: string };
+    if (childType.displayName !== POPUP_COMPONENT_NAME && childType.name !== POPUP_COMPONENT_NAME) {
+      return undefined;
+    }
+
+    const props = children.props as { children?: MarkerProps["children"] };
+    return extractPopupText(props.children);
+  }
+
+  return undefined;
 }

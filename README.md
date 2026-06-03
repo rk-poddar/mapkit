@@ -23,3 +23,7 @@ Run the basic example:
 ```bash
 pnpm --filter @map-kit/example-next-basic dev
 ```
+
+Leaflet docs:
+
+- `docs/LEAFLET_QUICKSTART.md`

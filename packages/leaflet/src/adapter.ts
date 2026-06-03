@@ -103,6 +103,10 @@ function createMarkerIcon(L: LeafletModule, marker: MarkerModel): Leaflet.DivIco
   });
 }
 
+function getMarkerPopupContent(marker: MarkerModel): string | undefined {
+  return [marker.title, marker.description, marker.popup].filter(Boolean).join("<br />");
+}
+
 function applyPathStyle(
   layer: LeafletPolyline | LeafletCircle | LeafletPolygon,
   model: RouteModel | CircleModel | PolygonModel,
@@ -211,8 +215,9 @@ export function createLeafletAdapter(): MapAdapter {
         zIndexOffset: marker.zIndex,
       }).addTo(map);
 
-      if (marker.title || marker.description) {
-        markerLayer.bindPopup([marker.title, marker.description].filter(Boolean).join("<br />"));
+      const popupContent = getMarkerPopupContent(marker);
+      if (popupContent) {
+        markerLayer.bindPopup(popupContent);
       }
 
       return createHandle(marker.id, markerLayer);
@@ -225,8 +230,9 @@ export function createLeafletAdapter(): MapAdapter {
       markerLayer.setZIndexOffset(marker.zIndex ?? 0);
       markerLayer.setIcon(createMarkerIcon(getLeaflet(_instance), marker));
 
-      if (marker.title || marker.description) {
-        markerLayer.bindPopup([marker.title, marker.description].filter(Boolean).join("<br />"));
+      const popupContent = getMarkerPopupContent(marker);
+      if (popupContent) {
+        markerLayer.bindPopup(popupContent);
       } else {
         markerLayer.unbindPopup();
       }

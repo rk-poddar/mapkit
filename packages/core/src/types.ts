@@ -113,6 +113,7 @@ export type MarkerModel = BaseLayerModel & {
   position: LatLng;
   title?: string;
   description?: string;
+  popup?: string;
   color?: string;
   draggable?: boolean;
 };
