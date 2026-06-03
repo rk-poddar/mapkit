@@ -1,0 +1,19 @@
+{
+  "name": "@map-kit/cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CLI for installing Map Kit components and blocks.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"No lint configured for @map-kit/cli yet\"",
+    "test": "echo \"No tests configured for @map-kit/cli yet\""
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

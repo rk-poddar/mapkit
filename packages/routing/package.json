@@ -1,0 +1,22 @@
+{
+  "name": "@map-kit/routing",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Routing utilities and route playback helpers for Map Kit.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"No lint configured for @map-kit/routing yet\"",
+    "test": "echo \"No tests configured for @map-kit/routing yet\""
+  },
+  "dependencies": {
+    "@map-kit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
