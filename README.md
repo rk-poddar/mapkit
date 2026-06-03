@@ -12,11 +12,15 @@ Current implementation status:
 - `@map-kit/core` Phase 2 started with framework-agnostic types and utilities.
 - `@map-kit/react` Phase 3 started with engine-agnostic React primitives.
 - `@map-kit/leaflet` Phase 4 started with the first real map adapter.
+- `@map-kit/maplibre` Phase 5 started with the first WebGL adapter.
+- `@map-kit/mapbox` Phase 6A started with Mapbox GL adapter parity.
 - `examples/next-basic` renders the first Leaflet-powered map.
+- `examples/next-maplibre` renders the first MapLibre-powered map.
+- `examples/next-mapbox` renders the first Mapbox-powered map when a Mapbox token is provided.
 
 Next phase:
 
-- Harden the Leaflet adapter and add docs/tests around marker icons, popups, and layer lifecycle.
+- Add the Google Maps adapter baseline.
 
 Run the basic example:
 
@@ -31,3 +35,7 @@ Leaflet docs:
 MapLibre docs:
 
 - `docs/MAPLIBRE_QUICKSTART.md`
+
+Mapbox docs:
+
+- `docs/MAPBOX_QUICKSTART.md`

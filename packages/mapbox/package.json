@@ -5,16 +5,23 @@
   "description": "Mapbox adapter for Map Kit.",
   "type": "module",
   "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && cp -R dist/mapbox/src/. dist/",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @map-kit/mapbox yet\"",
     "test": "echo \"No tests configured for @map-kit/mapbox yet\""
   },
   "dependencies": {
-    "@map-kit/core": "workspace:*"
+    "@map-kit/core": "workspace:*",
+    "mapbox-gl": "^3.24.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
