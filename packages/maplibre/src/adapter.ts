@@ -12,7 +12,6 @@ import type {
 } from "@map-kit/core";
 import type {
   GeoJSONSource,
-  LngLatBoundsLike,
   Map as MapLibreMap,
   Marker as MapLibreMarker,
   Popup as MapLibrePopup,
@@ -35,6 +34,10 @@ type MapLibreMarkerHandle = {
   popup?: MapLibrePopup;
 };
 
+type MapLibreAdapterInstance = MapAdapterInstance & {
+  maplibregl?: MapLibreModule;
+};
+
 let mapLibreModulePromise: Promise<MapLibreModule> | undefined;
 const mapLibreModuleByMap = new WeakMap<MapLibreMap, MapLibreModule>();
 
@@ -47,15 +50,62 @@ function toLngLat(position: LatLng): [number, number] {
   return [position[1], position[0]];
 }
 
-function toBounds(bounds: LatLngBounds): LngLatBoundsLike {
-  return [toLngLat(bounds[0]), toLngLat(bounds[1])];
+function assertFinitePosition(position: LatLng, label: string): void {
+  if (!Number.isFinite(position[0]) || !Number.isFinite(position[1])) {
+    throw new Error(`Invalid ${label}: expected finite [lat, lng] coordinates.`);
+  }
 }
 
-function toMapLibreBounds(
-  maplibregl: MapLibreModule,
-  bounds: LatLngBounds,
-): MapLibre.LngLatBounds {
-  return new maplibregl.LngLatBounds(toLngLat(bounds[0]), toLngLat(bounds[1]));
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function toMapLibreBounds(bounds: LatLngBounds): [number, number, number, number] {
+  const [first, second] = bounds;
+
+  assertFinitePosition(first, "bounds[0]");
+  assertFinitePosition(second, "bounds[1]");
+
+  const south = Math.min(first[0], second[0]);
+  const north = Math.max(first[0], second[0]);
+  const west = Math.min(first[1], second[1]);
+  const east = Math.max(first[1], second[1]);
+
+  return [west, south, east, north];
+}
+
+function toMapLibreFitBoundsOptions(options?: {
+  maxZoom?: number;
+  padding?: number | { top?: number; right?: number; bottom?: number; left?: number };
+}) {
+  const fitBoundsOptions: {
+    maxZoom?: number;
+    padding?: number | { top: number; right: number; bottom: number; left: number };
+  } = {};
+  const maxZoom = options?.maxZoom;
+  const padding = options?.padding;
+
+  if (isFiniteNumber(maxZoom)) {
+    fitBoundsOptions.maxZoom = maxZoom;
+  }
+
+  if (typeof padding === "number") {
+    fitBoundsOptions.padding = isFiniteNumber(padding) ? padding : 0;
+  } else if (padding) {
+    const top = padding.top;
+    const right = padding.right;
+    const bottom = padding.bottom;
+    const left = padding.left;
+
+    fitBoundsOptions.padding = {
+      top: isFiniteNumber(top) ? top : 0,
+      right: isFiniteNumber(right) ? right : 0,
+      bottom: isFiniteNumber(bottom) ? bottom : 0,
+      left: isFiniteNumber(left) ? left : 0,
+    };
+  }
+
+  return fitBoundsOptions;
 }
 
 function getMap(instance: MapAdapterInstance): MapLibreMap {
@@ -63,6 +113,12 @@ function getMap(instance: MapAdapterInstance): MapLibreMap {
 }
 
 function getMapLibre(instance: MapAdapterInstance): MapLibreModule {
+  const instanceMapLibre = (instance as MapLibreAdapterInstance).maplibregl;
+
+  if (instanceMapLibre) {
+    return instanceMapLibre;
+  }
+
   const mapLibre = mapLibreModuleByMap.get(getMap(instance));
 
   if (!mapLibre) {
@@ -277,14 +333,17 @@ export function createMapLibreAdapter(): MapAdapter {
       });
 
       if (options.bounds) {
-        map.fitBounds(toMapLibreBounds(maplibregl, options.bounds));
+        map.fitBounds(toMapLibreBounds(options.bounds));
       }
 
-      return {
+      const instance: MapLibreAdapterInstance = {
         engine: "maplibre",
         nativeMap: map,
         container: options.container,
+        maplibregl,
       };
+
+      return instance;
     },
 
     destroyMap(instance: MapAdapterInstance): void {
@@ -302,20 +361,7 @@ export function createMapLibreAdapter(): MapAdapter {
     },
 
     fitBounds(instance: MapAdapterInstance, bounds, options): void {
-      const padding =
-        typeof options?.padding === "number"
-          ? options.padding
-          : {
-              top: options?.padding?.top ?? 0,
-              right: options?.padding?.right ?? 0,
-              bottom: options?.padding?.bottom ?? 0,
-              left: options?.padding?.left ?? 0,
-            };
-
-      getMap(instance).fitBounds(toMapLibreBounds(getMapLibre(instance), bounds), {
-        maxZoom: options?.maxZoom,
-        padding,
-      });
+      getMap(instance).fitBounds(toMapLibreBounds(bounds), toMapLibreFitBoundsOptions(options));
     },
 
     addMarker(instance: MapAdapterInstance, marker: MarkerModel): MapLayerHandle {
