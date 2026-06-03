@@ -70,6 +70,39 @@ function createHandle(id: string, nativeLayer: LeafletLayer): MapLayerHandle {
   };
 }
 
+function createMarkerIcon(L: LeafletModule, marker: MarkerModel): Leaflet.DivIcon {
+  const color = marker.color ?? "#2563eb";
+
+  return L.divIcon({
+    className: "mapkit-leaflet-marker",
+    html: [
+      `<span style="`,
+      "display:block;",
+      "width:22px;",
+      "height:22px;",
+      "border-radius:999px 999px 999px 0;",
+      `background:${color};`,
+      "border:3px solid white;",
+      "box-shadow:0 4px 12px rgb(15 23 42 / 30%);",
+      "transform:rotate(-45deg);",
+      `"></span>`,
+      `<span style="`,
+      "position:absolute;",
+      "left:7px;",
+      "top:7px;",
+      "display:block;",
+      "width:8px;",
+      "height:8px;",
+      "border-radius:999px;",
+      "background:white;",
+      `"></span>`,
+    ].join(""),
+    iconAnchor: [11, 22],
+    iconSize: [22, 22],
+    popupAnchor: [0, -22],
+  });
+}
+
 function applyPathStyle(
   layer: LeafletPolyline | LeafletCircle | LeafletPolygon,
   model: RouteModel | CircleModel | PolygonModel,
@@ -171,6 +204,7 @@ export function createLeafletAdapter(): MapAdapter {
       const map = getMap(instance);
       const L = getLeaflet(instance);
       const markerLayer = L.marker(toLeafletLatLng(marker.position), {
+        icon: createMarkerIcon(L, marker),
         title: marker.title,
         draggable: marker.draggable,
         opacity: marker.visible === false ? 0 : 1,
@@ -189,6 +223,7 @@ export function createLeafletAdapter(): MapAdapter {
       markerLayer.setLatLng(toLeafletLatLng(marker.position));
       markerLayer.setOpacity(marker.visible === false ? 0 : 1);
       markerLayer.setZIndexOffset(marker.zIndex ?? 0);
+      markerLayer.setIcon(createMarkerIcon(getLeaflet(_instance), marker));
 
       if (marker.title || marker.description) {
         markerLayer.bindPopup([marker.title, marker.description].filter(Boolean).join("<br />"));

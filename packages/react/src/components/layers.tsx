@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useMapContext } from "../map-context";
 import type {
   CircleProps,
@@ -39,16 +39,20 @@ export function Polygon(props: PolygonProps) {
 function useLayer(layer: MapLayerState) {
   const { registerLayer, updateLayer, removeLayer } = useMapContext();
   const layerId = layer.model.id;
+  const layerRef = useRef(layer);
+  const layerSignature = useMemo(() => JSON.stringify(layer), [layer]);
+
+  layerRef.current = layer;
 
   useEffect(() => {
-    registerLayer(layer);
+    registerLayer(layerRef.current);
 
     return () => {
       removeLayer(layerId);
     };
-  }, [layer, layerId, registerLayer, removeLayer]);
+  }, [layerId, registerLayer, removeLayer]);
 
   useEffect(() => {
-    updateLayer(layer);
-  }, [layer, updateLayer]);
+    updateLayer(layerRef.current);
+  }, [layerSignature, updateLayer]);
 }
