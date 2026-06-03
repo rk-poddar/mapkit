@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getMapAdapter } from "../adapter-registry";
 import { createFallbackMapController } from "../controller";
+import { MapLayerSync } from "../layer-sync";
 import { MapContextProvider } from "../map-context";
 import type { MapProps } from "../types";
 
@@ -54,6 +55,9 @@ export function Map(props: MapProps) {
     onReady,
   } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const adapterRef = useRef<MapAdapter | undefined>(undefined);
+  const instanceRef = useRef<MapAdapterInstance | undefined>(undefined);
+  const viewStateRef = useRef({ center, zoom });
   const [viewState, setViewState] = useState({ center, zoom });
   const [instance, setInstance] = useState<MapAdapterInstance | undefined>();
   const [isReady, setIsReady] = useState(false);
@@ -68,21 +72,67 @@ export function Map(props: MapProps) {
   const controller = useMemo(
     () =>
       createFallbackMapController(engine, {
-        getCenter: () => viewState.center,
-        getZoom: () => viewState.zoom,
+        getCenter: () => viewStateRef.current.center,
+        getZoom: () => viewStateRef.current.zoom,
         setView: (nextCenter, nextZoom) => {
           setViewState((current) => ({
             center: nextCenter,
             zoom: nextZoom ?? current.zoom,
           }));
+
+          const currentAdapter = adapterRef.current;
+          const currentInstance = instanceRef.current;
+          if (currentAdapter && currentInstance) {
+            currentAdapter.setView(currentInstance, {
+              center: nextCenter,
+              zoom: nextZoom ?? viewStateRef.current.zoom,
+            });
+          }
+        },
+        fitBounds: (bounds, options) => {
+          const currentAdapter = adapterRef.current;
+          const currentInstance = instanceRef.current;
+          if (currentAdapter && currentInstance) {
+            currentAdapter.fitBounds(currentInstance, bounds, options);
+          }
+        },
+        panTo: (nextCenter, options) => {
+          const currentAdapter = adapterRef.current;
+          const currentInstance = instanceRef.current;
+          if (currentAdapter && currentInstance) {
+            currentAdapter.setView(currentInstance, {
+              center: nextCenter,
+              zoom: options?.durationMs ? undefined : viewStateRef.current.zoom,
+            });
+          }
+
+          setViewState((current) => ({
+            center: nextCenter,
+            zoom: current.zoom,
+          }));
+        },
+        getNativeMap: () => {
+          return instanceRef.current?.nativeMap;
         },
       }),
-    [engine, viewState.center, viewState.zoom],
+    [engine],
   );
 
   useEffect(() => {
     setViewState({ center, zoom });
   }, [center, zoom]);
+
+  useEffect(() => {
+    adapterRef.current = adapter;
+  }, [adapter]);
+
+  useEffect(() => {
+    instanceRef.current = instance;
+  }, [instance]);
+
+  useEffect(() => {
+    viewStateRef.current = viewState;
+  }, [viewState]);
 
   useEffect(() => {
     if (!provider) {
@@ -131,6 +181,7 @@ export function Map(props: MapProps) {
         }
 
         nextInstance = createdInstance;
+        instanceRef.current = createdInstance;
         setInstance(createdInstance);
         setIsReady(true);
         setError(undefined);
@@ -150,6 +201,7 @@ export function Map(props: MapProps) {
     return () => {
       disposed = true;
       setIsReady(false);
+      instanceRef.current = undefined;
       setInstance(undefined);
 
       if (nextInstance) {
@@ -171,9 +223,15 @@ export function Map(props: MapProps) {
     props.onClick,
     props.onMove,
     provider,
-    viewState.center,
-    viewState.zoom,
   ]);
+
+  useEffect(() => {
+    if (!adapter || !instance) {
+      return;
+    }
+
+    adapter.setView(instance, viewState);
+  }, [adapter, instance, viewState]);
 
   return (
     <MapContextProvider
@@ -193,6 +251,7 @@ export function Map(props: MapProps) {
       >
         {!adapter ? fallback : null}
       </div>
+      <MapLayerSync />
       {children}
     </MapContextProvider>
   );

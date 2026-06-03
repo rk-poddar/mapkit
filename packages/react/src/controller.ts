@@ -12,6 +12,10 @@ export type ViewStateStore = {
   getCenter(): LatLng;
   getZoom(): number;
   setView(center: LatLng, zoom?: number): void;
+  fitBounds?(bounds: LatLngBounds, options?: FitBoundsOptions): void;
+  panTo?(center: LatLng, options?: CameraOptions): void;
+  resize?(): void;
+  getNativeMap?(): unknown;
 };
 
 export function createFallbackMapController(
@@ -26,16 +30,26 @@ export function createFallbackMapController(
       viewStore.setView(center, zoom);
     },
     fitBounds(bounds: LatLngBounds, options?: FitBoundsOptions) {
+      if (viewStore.fitBounds) {
+        viewStore.fitBounds(bounds, options);
+        return;
+      }
+
       viewStore.setView(getBoundsCenter(bounds), options?.maxZoom);
     },
-    panTo(center: LatLng, _options?: CameraOptions) {
+    panTo(center: LatLng, options?: CameraOptions) {
+      if (viewStore.panTo) {
+        viewStore.panTo(center, options);
+        return;
+      }
+
       viewStore.setView(center);
     },
     resize() {
-      // Native adapters replace this no-op with engine-specific resize behavior.
+      viewStore.resize?.();
     },
     getNativeMap() {
-      return undefined;
+      return viewStore.getNativeMap?.();
     },
   };
 }
