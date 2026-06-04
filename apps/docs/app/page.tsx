@@ -1,60 +1,11 @@
 import { MapPreview } from "./map-preview";
-
-const components = [
-  {
-    category: "control",
-    command: "pnpm dlx @map-kit/cli add map-controls",
-    description: "Zoom, fullscreen, and reset controls that can be copied into an app.",
-    name: "Map Controls",
-  },
-  {
-    category: "marker",
-    command: "pnpm dlx @map-kit/cli add marker-badge",
-    description: "Pin, dot, and badge marker visuals for list previews and HTML markers.",
-    name: "Marker Badge",
-  },
-  {
-    category: "overlay",
-    command: "pnpm dlx @map-kit/cli add popup-card",
-    description: "A compact overlay card for popups and contextual map content.",
-    name: "Popup Card",
-  },
-  {
-    category: "overlay",
-    command: "pnpm dlx @map-kit/cli add map-legend",
-    description: "Route and layer legends designed to sit cleanly above maps.",
-    name: "Map Legend",
-  },
-];
-
-const engines = [
-  ["Leaflet", "Fast setup", "Best for admin panels, logistics tools, and OSM-first apps."],
-  ["MapLibre", "Open WebGL", "Best for vector tiles, styling control, and open-source map stacks."],
-  ["Mapbox", "Managed WebGL", "Best when teams already use Mapbox styles, tokens, and services."],
-  ["Google Maps", "Coverage", "Best when Google Places, traffic, or familiar business maps matter."],
-];
-
-const installSteps = [
-  "pnpm add @map-kit/react @map-kit/leaflet leaflet",
-  "pnpm dlx @map-kit/cli add map-controls popup-card",
-  "import { Map, Marker, Route } from \"@map-kit/react\";",
-];
+import { componentDocs, engineDocs, installSteps } from "./docs-data";
+import { SiteHeader } from "./site-header";
 
 export default function HomePage() {
   return (
     <main>
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Map Kit home">
-          <span className="brand-mark">M</span>
-          Map Kit
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#docs">Docs</a>
-          <a href="#components">Components</a>
-          <a href="#engines">Engines</a>
-          <a href="#registry">Registry</a>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <section className="hero" id="top">
         <div className="hero-copy">
@@ -68,7 +19,7 @@ export default function HomePage() {
             <a className="primary-action" href="#preview">
               View preview
             </a>
-            <a className="secondary-action" href="#components">
+            <a className="secondary-action" href="/components">
               Browse components
             </a>
           </div>
@@ -120,13 +71,13 @@ export default function HomePage() {
           <h2>Import from the package or copy the block into your app.</h2>
         </div>
         <div className="component-grid">
-          {components.map((component) => (
-            <article className="component-card" key={component.name}>
+          {componentDocs.map((component) => (
+            <a className="component-card" href={`/components/${component.slug}`} key={component.name}>
               <span className="pill">{component.category}</span>
               <h3>{component.name}</h3>
               <p>{component.description}</p>
               <code>{component.command}</code>
-            </article>
+            </a>
           ))}
         </div>
       </section>
@@ -137,7 +88,7 @@ export default function HomePage() {
           <h2>Pick the map engine that matches the product decision.</h2>
         </div>
         <div className="engine-table">
-          {engines.map(([name, label, description]) => (
+          {engineDocs.map(([name, label, description]) => (
             <article className="engine-row" key={name}>
               <strong>{name}</strong>
               <span>{label}</span>

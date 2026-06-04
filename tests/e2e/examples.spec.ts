@@ -78,4 +78,26 @@ test.describe("example runtime smoke checks", () => {
     await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
     await expect(page.getByText("map-kit registry map-controls")).toBeVisible();
   });
+
+  test("Docs component pages expose install commands and source previews", async ({ page }) => {
+    await page.goto(`${examples.docs}/components`);
+
+    await expect(page.getByRole("heading", { name: "Copy-paste map UI blocks for real product surfaces." })).toBeVisible();
+    await page.getByRole("link", { name: /Map Controls/ }).click();
+
+    await expect(page).toHaveURL(/\/components\/map-controls$/);
+    await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
+    await expect(page.getByText("pnpm dlx @map-kit/cli add map-controls")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Source preview" })).toBeVisible();
+  });
+
+  test("Docs installation and registry pages render guide content", async ({ page }) => {
+    await page.goto(`${examples.docs}/docs/installation`);
+    await expect(page.getByRole("heading", { name: "Install Map Kit and render your first map." })).toBeVisible();
+    await expect(page.getByText("pnpm add @map-kit/react @map-kit/leaflet leaflet")).toBeVisible();
+
+    await page.goto(`${examples.docs}/docs/registry`);
+    await expect(page.getByRole("heading", { name: /Component metadata/ })).toBeVisible();
+    await expect(page.getByText("\"schemaVersion\": \"0.1.0\"")).toBeVisible();
+  });
 });
