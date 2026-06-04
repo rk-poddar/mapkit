@@ -31,6 +31,7 @@ const docsLinks = [
 ];
 
 export function DocsSearch() {
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -50,31 +51,54 @@ export function DocsSearch() {
   }, [query]);
 
   return (
-    <div className="docs-search">
-      <label className="sr-only" htmlFor="docs-search">
-        Search docs
-      </label>
-      <input
-        autoComplete="off"
-        id="docs-search"
-        onChange={(event) => setQuery(event.target.value)}
-        placeholder="Search docs..."
-        type="search"
-        value={query}
-      />
-      <div className="docs-search-panel">
-        {results.length ? (
-          results.map((item) => (
-            <a aria-label={`Search result: ${item.label}`} href={item.href} key={item.href}>
-              <span>{item.type}</span>
-              <strong>{item.label}</strong>
-              <small>{item.description}</small>
-            </a>
-          ))
-        ) : (
-          <p>No docs found.</p>
-        )}
-      </div>
-    </div>
+    <>
+      <button className="docs-search-trigger" onClick={() => setOpen(true)} type="button">
+        <span>Search...</span>
+        <kbd>⌘K</kbd>
+      </button>
+      {open ? (
+        <div className="command-overlay" role="presentation">
+          <button aria-label="Close search" className="command-scrim" onClick={() => setOpen(false)} type="button" />
+          <div aria-label="Docs command menu" className="command-dialog" role="dialog">
+            <div className="command-input-row">
+              <span>⌕</span>
+              <label className="sr-only" htmlFor="docs-search">
+                Search docs
+              </label>
+              <input
+                autoComplete="off"
+                autoFocus
+                id="docs-search"
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search..."
+                type="search"
+                value={query}
+              />
+            </div>
+            <div className="command-list">
+              <span className="command-section-label">Pages</span>
+              {results.length ? (
+                results.map((item) => (
+                  <a aria-label={`Search result: ${item.label}`} href={item.href} key={item.href}>
+                    <span>↳</span>
+                    <strong>{item.label}</strong>
+                    <small>{item.type}</small>
+                  </a>
+                ))
+              ) : (
+                <p>No docs found.</p>
+              )}
+            </div>
+            <div className="command-footer">
+              <span>↑ ↓ navigate</span>
+              <span>↵ select</span>
+              <button onClick={() => setOpen(false)} type="button">
+                esc close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

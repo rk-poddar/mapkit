@@ -9,43 +9,58 @@ export default function HomePage() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">React and Next.js map UI kit</p>
-          <h1>Beautiful maps, without rebuilding map plumbing every time.</h1>
+          <h1>Beautiful maps, made simple</h1>
           <p className="hero-text">
-            Map Kit gives product teams engine-agnostic React primitives, polished copy-paste UI
-            blocks, and adapters for Leaflet, MapLibre, Google Maps, and Mapbox.
+            Ready-to-use, customizable map components for React and Next.js. Built for multiple
+            engines, styled with shadcn-inspired patterns.
           </p>
           <div className="hero-actions">
             <a className="primary-action" href="#preview">
-              View preview
+              Get Started
             </a>
             <a className="secondary-action" href="/components">
-              Browse components
+              View Components
             </a>
           </div>
         </div>
-        <div className="hero-panel" aria-label="Install command">
-          <div className="terminal">
-            <span className="dot red" />
-            <span className="dot yellow" />
-            <span className="dot green" />
-            <code>pnpm dlx @map-kit/cli add map-controls popup-card</code>
+      </section>
+
+      <section className="showcase-grid" aria-label="Map component previews">
+        <article className="showcase-card showcase-card-wide">
+          <div className="world-map-preview">
+            <div className="stats-card">
+              <span>Active users</span>
+              <strong>2,847</strong>
+              <small>+12.5% vs last hour</small>
+            </div>
+            <span className="map-dot dot-one" />
+            <span className="map-dot dot-two" />
+            <span className="map-dot dot-three" />
+            <strong className="continent-label label-one">North America</strong>
+            <strong className="continent-label label-two">Europe</strong>
+            <strong className="continent-label label-three">Asia</strong>
           </div>
-          <div className="hero-grid">
-            <div>
-              <strong>4 engines</strong>
-              <span>one React API</span>
+        </article>
+        <article className="showcase-card">
+          <div className="route-preview">
+            <div className="route-metric-card">
+              <strong>Central Park Loop</strong>
+              <span>6.2 mi · 32 min · 285 cal</span>
             </div>
-            <div>
-              <strong>CLI registry</strong>
-              <span>copy app-owned UI</span>
-            </div>
-            <div>
-              <strong>Next-ready</strong>
-              <span>examples and smoke tests</span>
-            </div>
+            <svg viewBox="0 0 280 300" aria-hidden="true">
+              <path d="M120 10 L215 58 L185 112 L230 145 L144 276 L76 240 L112 168 L76 132 Z" />
+              <circle cx="120" cy="10" r="8" />
+            </svg>
           </div>
-        </div>
+        </article>
+        <article className="showcase-card">
+          <div className="globe-preview">
+            <button aria-label="Locate preview" type="button">
+              ↗
+            </button>
+            <div className="globe" />
+          </div>
+        </article>
       </section>
 
       <MapPreview />

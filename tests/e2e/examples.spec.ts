@@ -67,7 +67,7 @@ test.describe("example runtime smoke checks", () => {
     await page.goto(examples.docs);
 
     await expect(
-      page.getByRole("heading", { name: "Beautiful maps, without rebuilding map plumbing every time." }),
+      page.getByRole("heading", { name: "Beautiful maps, made simple" }),
     ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Declarative map UI with real engine adapters." })).toBeVisible();
 
@@ -82,30 +82,31 @@ test.describe("example runtime smoke checks", () => {
   test("Docs component pages expose install commands and source previews", async ({ page }) => {
     await page.goto(`${examples.docs}/components`);
 
-    await expect(page.getByRole("heading", { name: "Copy-paste map UI blocks for real product surfaces." })).toBeVisible();
-    await page.getByRole("link", { name: /Map Controls/ }).click();
+    await expect(page.getByRole("heading", { name: "Components" })).toBeVisible();
+    await page.locator(".component-list-card").filter({ hasText: "Map Controls" }).click();
 
     await expect(page).toHaveURL(/\/components\/map-controls$/);
     await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
     await expect(page.getByText("pnpm dlx @map-kit/cli add map-controls")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Source preview" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Source" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Copy Usage" })).toBeVisible();
   });
 
   test("Docs installation and registry pages render guide content", async ({ page }) => {
     await page.goto(`${examples.docs}/docs/installation`);
-    await expect(page.getByRole("heading", { name: "Install Map Kit and render your first map." })).toBeVisible();
+    await expect(page.locator("h1", { hasText: "Installation" })).toBeVisible();
     await expect(page.getByText("pnpm add @map-kit/react @map-kit/leaflet leaflet")).toBeVisible();
 
     await page.goto(`${examples.docs}/docs/registry`);
-    await expect(page.getByRole("heading", { name: /Component metadata/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Blocks Registry" })).toBeVisible();
     await expect(page.getByText("\"schemaVersion\": \"0.1.0\"")).toBeVisible();
   });
 
   test("Docs search jumps to component detail pages", async ({ page }) => {
     await page.goto(examples.docs);
 
-    await page.getByLabel("Search docs").fill("legend");
+    await page.getByRole("button", { name: /Search/ }).click();
+    await page.getByRole("searchbox", { name: "Search docs" }).fill("legend");
     await page.getByRole("link", { name: "Search result: Map Legend" }).click();
 
     await expect(page).toHaveURL(/\/components\/map-legend$/);

@@ -6,8 +6,7 @@ import { DocsSearch } from "./docs-search";
 const navItems = [
   { href: "/docs/installation", label: "Docs", match: "/docs" },
   { href: "/components", label: "Components", match: "/components" },
-  { href: "/docs/engines", label: "Engines", match: "/docs/engines" },
-  { href: "/docs/registry", label: "Registry", match: "/docs/registry" },
+  { href: "/docs/registry", label: "Blocks", match: "/docs/registry" },
 ];
 
 export function SiteHeader() {
@@ -15,25 +14,35 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <a className="brand" href="/" aria-label="Map Kit home">
-        <span className="brand-mark">M</span>
-        Map Kit
-      </a>
-      <DocsSearch />
-      <nav aria-label="Primary navigation">
-        {navItems.map((item) => {
-          const isActive =
-            item.href === "/docs/installation"
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(item.match);
+      <div className="site-header-left">
+        <a className="brand" href="/" aria-label="Map Kit home">
+          <span className="brand-mark">⌖</span>
+          mapkit
+        </a>
+        <nav aria-label="Primary navigation">
+          {navItems.map((item) => {
+            const isActive =
+              item.href === "/docs/installation"
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(item.match);
 
-          return (
-            <a aria-current={isActive ? "page" : undefined} href={item.href} key={item.href}>
-              {item.label}
-            </a>
-          );
-        })}
-      </nav>
+            return (
+              <a aria-current={isActive ? "page" : undefined} href={item.href} key={item.href}>
+                {item.label}
+              </a>
+            );
+          })}
+        </nav>
+      </div>
+      <div className="site-header-right">
+        <DocsSearch />
+        <a className="github-link" href="https://github.com/rk-poddar/mapkit">
+          GitHub
+        </a>
+        <button aria-label="Toggle theme preview" className="theme-toggle" type="button">
+          ◐
+        </button>
+      </div>
     </header>
   );
 }

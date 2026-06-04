@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CodeBlock } from "../../code-block";
 import { ComponentPreview } from "../component-preview";
+import { DocsShell } from "../../docs-shell";
 import { componentDocs, getComponentDoc } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
 
@@ -19,38 +20,35 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
   return (
     <main>
       <SiteHeader />
-      <section className="doc-hero detail-hero">
-        <div>
-          <p className="eyebrow">{component.category}</p>
+      <DocsShell toc={["Preview", "Installation", "Usage", "Source"]}>
+        <header className="docs-page-header">
+          <span className="pill">{component.category}</span>
           <h1>{component.name}</h1>
           <p>{component.description}</p>
-        </div>
-        <ComponentPreview component={component} />
-      </section>
-      <section className="detail-layout">
-        <aside className="detail-aside">
-          <span className="pill">Install</span>
+        </header>
+        <section className="docs-prose-section" id="preview">
+          <h2>Preview</h2>
+          <ComponentPreview component={component} />
+        </section>
+        <section className="docs-prose-section" id="installation">
+          <h2>Installation</h2>
           <CodeBlock code={component.command} label="Install command" />
-          <span className="pill">File</span>
-          <code>{component.fileName}</code>
-          <span className="pill">Tags</span>
-          <div className="tag-list">
+          <div className="detail-meta">
+            <code>{component.fileName}</code>
             {component.tags.map((tag) => (
               <span key={tag}>{tag}</span>
             ))}
           </div>
-        </aside>
-        <div className="detail-main">
-          <article className="doc-card">
-            <h2>Usage</h2>
-            <CodeBlock code={component.usage} label="Usage" />
-          </article>
-          <article className="doc-card">
-            <h2>Source preview</h2>
-            <CodeBlock code={component.source} label={component.fileName} />
-          </article>
-        </div>
-      </section>
+        </section>
+        <section className="docs-prose-section" id="usage">
+          <h2>Usage</h2>
+          <CodeBlock code={component.usage} label="Usage" />
+        </section>
+        <section className="docs-prose-section" id="source">
+          <h2>Source</h2>
+          <CodeBlock code={component.source} label={component.fileName} />
+        </section>
+      </DocsShell>
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import { CodeBlock } from "../../code-block";
+import { DocsShell } from "../../docs-shell";
 import { installSteps } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
 
@@ -22,41 +23,40 @@ export default function InstallationPage() {
   return (
     <main>
       <SiteHeader />
-      <section className="doc-hero">
-        <p className="eyebrow">Docs</p>
-        <h1>Install Map Kit and render your first map.</h1>
-        <p>
-          Start with a map engine adapter, then add React primitives and copy-paste UI blocks when
-          your app needs product-ready controls.
-        </p>
-      </section>
-      <section className="docs-layout">
-        <aside className="docs-sidebar">
-          <a href="/docs/installation">Installation</a>
-          <a href="/docs/engines">Engines</a>
-          <a href="/docs/registry">Registry</a>
-          <a href="/components">Components</a>
-        </aside>
-        <div className="docs-content">
-          <article className="doc-card">
-            <h2>Quick start</h2>
-            <div className="steps vertical">
-              {installSteps.map((step, index) => (
-                <div className="step-card" key={step}>
-                  <span>{index + 1}</span>
-                  <code>{step}</code>
-                </div>
-              ))}
-            </div>
-          </article>
+      <DocsShell toc={["Prerequisites", "Installation", "Usage"]}>
+        <header className="docs-page-header">
+          <h1>Installation</h1>
+          <p>How to install and set up Map Kit in your project.</p>
+        </header>
+
+        <section className="docs-prose-section" id="prerequisites">
+          <h2>Prerequisites</h2>
+          <p>A React or Next.js project. Tailwind and shadcn/ui patterns are recommended for copied UI blocks.</p>
+        </section>
+
+        <section className="docs-prose-section" id="installation">
+          <h2>Installation</h2>
+          <p>Start with the React primitives and one map engine adapter:</p>
+          <div className="steps vertical">
+            {installSteps.map((step, index) => (
+              <div className="step-card" key={step}>
+                <span>{index + 1}</span>
+                <code>{step}</code>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="docs-prose-section" id="usage">
+          <h2>Usage</h2>
           {snippets.map((snippet) => (
             <article className="doc-card" key={snippet.title}>
-              <h2>{snippet.title}</h2>
+              <h3>{snippet.title}</h3>
               <CodeBlock code={snippet.code} label={snippet.title} />
             </article>
           ))}
-        </div>
-      </section>
+        </section>
+      </DocsShell>
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import { CodeBlock } from "../../code-block";
+import { DocsShell } from "../../docs-shell";
 import { engineDocs } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
 
@@ -13,33 +14,35 @@ export default function EnginesPage() {
   return (
     <main>
       <SiteHeader />
-      <section className="doc-hero">
-        <p className="eyebrow">Engines</p>
-        <h1>One React API across the map engines teams already use.</h1>
-        <p>
-          Choose the renderer based on product requirements. Map Kit keeps the React surface stable
-          while each adapter owns engine-specific details.
-        </p>
-      </section>
-      <section className="section compact-section">
-        <div className="engine-table">
-          {engineDocs.map(([name, label, description]) => (
-            <article className="engine-row" key={name}>
-              <strong>{name}</strong>
-              <span>{label}</span>
-              <p>{description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="component-directory two-column">
-        {engineCommands.map(([name, command]) => (
-          <article className="doc-card" key={name}>
-            <h2>{name}</h2>
-            <CodeBlock code={command} label={`${name} install`} />
-          </article>
-        ))}
-      </section>
+      <DocsShell toc={["Choosing Engines", "Install Commands"]}>
+        <header className="docs-page-header">
+          <h1>Engines</h1>
+          <p>One React API across the map engines teams already use.</p>
+        </header>
+        <section className="docs-prose-section" id="choosing-engines">
+          <h2>Choosing Engines</h2>
+          <div className="engine-table">
+            {engineDocs.map(([name, label, description]) => (
+              <article className="engine-row" key={name}>
+                <strong>{name}</strong>
+                <span>{label}</span>
+                <p>{description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <section className="docs-prose-section" id="install-commands">
+          <h2>Install Commands</h2>
+          <div className="two-column">
+            {engineCommands.map(([name, command]) => (
+              <article className="doc-card" key={name}>
+                <h3>{name}</h3>
+                <CodeBlock code={command} label={`${name} install`} />
+              </article>
+            ))}
+          </div>
+        </section>
+      </DocsShell>
     </main>
   );
 }
