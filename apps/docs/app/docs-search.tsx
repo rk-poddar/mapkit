@@ -1,32 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { docsSearchLinks } from "./docs-nav";
 import { componentDocs } from "./docs-data";
 
 const docsLinks = [
-  {
-    description: "Install packages and render your first map.",
-    href: "/docs/installation",
-    label: "Installation",
-    type: "Guide",
-  },
-  {
-    description: "Compare Leaflet, MapLibre, Mapbox, and Google Maps.",
-    href: "/docs/engines",
-    label: "Engines",
-    type: "Guide",
-  },
-  {
-    description: "Registry metadata, CLI commands, and copy-paste blocks.",
-    href: "/docs/registry",
-    label: "Registry",
-    type: "Guide",
-  },
+  ...docsSearchLinks,
   ...componentDocs.map((component) => ({
     description: component.description,
     href: `/components/${component.slug}`,
     label: component.name,
-    type: "Component",
+    type: "Block" as const,
   })),
 ];
 

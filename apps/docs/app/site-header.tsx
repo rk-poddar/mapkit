@@ -2,12 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { DocsSearch } from "./docs-search";
-
-const navItems = [
-  { href: "/docs/installation", label: "Docs", match: "/docs" },
-  { href: "/components", label: "Components", match: "/components" },
-  { href: "/docs/registry", label: "Blocks", match: "/docs/registry" },
-];
+import { headerNavItems } from "./docs-nav";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -20,11 +15,8 @@ export function SiteHeader() {
           mapkit
         </a>
         <nav aria-label="Primary navigation">
-          {navItems.map((item) => {
-            const isActive =
-              item.href === "/docs/installation"
-                ? pathname === item.href
-                : pathname === item.href || pathname.startsWith(item.match);
+          {headerNavItems.map((item) => {
+            const isActive = item.label === "Blocks" ? pathname === item.href : pathname.startsWith(item.match);
 
             return (
               <a aria-current={isActive ? "page" : undefined} href={item.href} key={item.href}>

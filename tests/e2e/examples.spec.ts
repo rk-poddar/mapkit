@@ -83,6 +83,13 @@ test.describe("example runtime smoke checks", () => {
     await page.goto(`${examples.docs}/components`);
 
     await expect(page.getByRole("heading", { name: "Components" })).toBeVisible();
+    await page.getByRole("link", { name: /^Map The root container/ }).click();
+
+    await expect(page).toHaveURL(/\/components\/map$/);
+    await expect(page.getByRole("heading", { name: "Map" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Controlled Mode" })).toBeVisible();
+
+    await page.goto(`${examples.docs}/components`);
     await page.locator(".component-list-card").filter({ hasText: "Map Controls" }).click();
 
     await expect(page).toHaveURL(/\/components\/map-controls$/);
@@ -93,9 +100,17 @@ test.describe("example runtime smoke checks", () => {
   });
 
   test("Docs installation and registry pages render guide content", async ({ page }) => {
+    await page.goto(`${examples.docs}/docs/getting-started`);
+    await expect(page.locator("h1", { hasText: "Introduction" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Any Map Engine" })).toBeVisible();
+
     await page.goto(`${examples.docs}/docs/installation`);
     await expect(page.locator("h1", { hasText: "Installation" })).toBeVisible();
     await expect(page.getByText("pnpm add @map-kit/react @map-kit/leaflet leaflet")).toBeVisible();
+
+    await page.goto(`${examples.docs}/docs/api-reference`);
+    await expect(page.getByRole("heading", { name: "API Reference" })).toBeVisible();
+    await expect(page.getByText("Shared React primitives")).toBeVisible();
 
     await page.goto(`${examples.docs}/docs/registry`);
     await expect(page.getByRole("heading", { name: "Blocks Registry" })).toBeVisible();
