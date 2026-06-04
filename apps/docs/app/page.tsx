@@ -1,6 +1,8 @@
 import { MapPreview } from "./map-preview";
 import { componentDocs, engineDocs, installSteps } from "./docs-data";
 import { SiteHeader } from "./site-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
@@ -15,12 +17,12 @@ export default function HomePage() {
             engines, styled with shadcn-inspired patterns.
           </p>
           <div className="hero-actions">
-            <a className="primary-action" href="#preview">
-              Get Started
-            </a>
-            <a className="secondary-action" href="/components">
-              View Components
-            </a>
+            <Button asChild className="primary-action">
+              <a href="#preview">Get Started</a>
+            </Button>
+            <Button asChild className="secondary-action" variant="outline">
+              <a href="/components">View Components</a>
+            </Button>
           </div>
         </div>
       </section>
@@ -88,7 +90,9 @@ export default function HomePage() {
         <div className="component-grid">
           {componentDocs.map((component) => (
             <a className="component-card" href={`/components/${component.slug}`} key={component.name}>
-              <span className="pill">{component.category}</span>
+              <Badge className="pill" variant="secondary">
+                {component.category}
+              </Badge>
               <h3>{component.name}</h3>
               <p>{component.description}</p>
               <code>{component.command}</code>
