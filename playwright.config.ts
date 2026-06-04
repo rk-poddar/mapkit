@@ -47,5 +47,11 @@ export default defineConfig({
       reuseExistingServer: !CI,
       timeout: 120_000,
     },
+    {
+      command: "pnpm --filter @map-kit/docs exec next start --port 3105",
+      url: "http://127.0.0.1:3105",
+      reuseExistingServer: !CI,
+      timeout: 120_000,
+    },
   ],
 });

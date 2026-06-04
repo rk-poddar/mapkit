@@ -74,3 +74,9 @@ Styled UI docs:
 Registry docs:
 
 - `docs/REGISTRY.md`
+
+Docs app:
+
+```bash
+pnpm --filter @map-kit/docs dev
+```

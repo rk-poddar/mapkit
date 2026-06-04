@@ -5,6 +5,7 @@ const examples = {
   maplibre: "http://127.0.0.1:3102?style=offline",
   mapbox: "http://127.0.0.1:3103",
   googleMaps: "http://127.0.0.1:3104",
+  docs: "http://127.0.0.1:3105",
 } as const;
 
 async function blockMapTiles(page: Page) {
@@ -59,5 +60,22 @@ test.describe("example runtime smoke checks", () => {
     await expect(page.getByRole("heading", { name: "Google Maps API key required" })).toBeVisible();
     await expect(page.getByText("NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key")).toBeVisible();
     await expect(page.locator('[data-mapkit-engine="google-maps"]')).toHaveCount(0);
+  });
+
+  test("Docs app renders the product showcase and live map preview", async ({ page }) => {
+    await blockMapTiles(page);
+    await page.goto(examples.docs);
+
+    await expect(
+      page.getByRole("heading", { name: "Beautiful maps, without rebuilding map plumbing every time." }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Declarative map UI with real engine adapters." })).toBeVisible();
+
+    const map = page.locator('[data-mapkit-engine="leaflet"]');
+    await expect(map).toBeVisible();
+    await expect(map).toHaveAttribute("data-mapkit-ready", "true", { timeout: 15_000 });
+    await expect(page.locator(".mapkit-leaflet-marker")).toHaveCount(3);
+    await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
+    await expect(page.getByText("map-kit registry map-controls")).toBeVisible();
   });
 });

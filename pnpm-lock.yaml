@@ -18,6 +18,40 @@ importers:
         specifier: ^4.1.8
         version: 4.1.8(@types/node@24.13.0)(@vitest/coverage-v8@4.1.8)(vite@8.0.16(@types/node@24.13.0))
 
+  apps/docs:
+    dependencies:
+      '@map-kit/leaflet':
+        specifier: workspace:*
+        version: link:../../packages/leaflet
+      '@map-kit/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      leaflet:
+        specifier: ^1.9.4
+        version: 1.9.4
+      next:
+        specifier: ^16.1.6
+        version: 16.2.7(@playwright/test@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.19.26
+        version: 20.19.41
+      '@types/react':
+        specifier: ^19.2.16
+        version: 19.2.16
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.16)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   examples/next-basic:
     dependencies:
       '@map-kit/leaflet':
