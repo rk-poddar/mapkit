@@ -5,18 +5,26 @@
   "description": "Google Maps adapter for Map Kit.",
   "type": "module",
   "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && cp -R dist/google-maps/src/. dist/",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @map-kit/google-maps yet\"",
     "test": "echo \"No tests configured for @map-kit/google-maps yet\""
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.1.0",
     "@map-kit/core": "workspace:*"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.65.0",
     "typescript": "^5.9.3"
   }
 }

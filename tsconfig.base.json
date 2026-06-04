@@ -13,6 +13,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@map-kit/core": ["packages/core/src/index.ts"],
+      "@map-kit/google-maps": ["packages/google-maps/src/index.ts"],
       "@map-kit/leaflet": ["packages/leaflet/src/index.ts"],
       "@map-kit/mapbox": ["packages/mapbox/src/index.ts"],
       "@map-kit/maplibre": ["packages/maplibre/src/index.ts"],

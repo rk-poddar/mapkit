@@ -14,13 +14,15 @@ Current implementation status:
 - `@map-kit/leaflet` Phase 4 started with the first real map adapter.
 - `@map-kit/maplibre` Phase 5 started with the first WebGL adapter.
 - `@map-kit/mapbox` Phase 6A started with Mapbox GL adapter parity.
+- `@map-kit/google-maps` Phase 6B started with Google Maps adapter parity.
 - `examples/next-basic` renders the first Leaflet-powered map.
 - `examples/next-maplibre` renders the first MapLibre-powered map.
 - `examples/next-mapbox` renders the first Mapbox-powered map when a Mapbox token is provided.
+- `examples/next-google-maps` renders the first Google Maps-powered map when a Google Maps API key is provided.
 
 Next phase:
 
-- Add the Google Maps adapter baseline.
+- Add adapter hardening tests and normalize package build output across adapters.
 
 Run the basic example:
 
@@ -39,3 +41,7 @@ MapLibre docs:
 Mapbox docs:
 
 - `docs/MAPBOX_QUICKSTART.md`
+
+Google Maps docs:
+
+- `docs/GOOGLE_MAPS_QUICKSTART.md`
