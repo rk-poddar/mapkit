@@ -4,7 +4,7 @@ Map Kit keeps map behavior and visual styling in separate packages:
 
 - `@map-kit/react`: headless React primitives and map lifecycle
 - `@map-kit/ui`: Tailwind-friendly styled components
-- `@map-kit/cli`: future copy-paste installer for app-owned components
+- `@map-kit/cli`: copy-paste installer for app-owned components
 
 This keeps the core package usable in custom design systems while still giving product teams a fast
 plug-and-play UI layer.
@@ -16,6 +16,50 @@ pnpm add @map-kit/react @map-kit/ui
 ```
 
 Your app should already have Tailwind configured. The UI package ships class names, not compiled CSS.
+
+## Copy Components Into Your App
+
+If you prefer shadcn-style app-owned components, use the CLI instead of importing from `@map-kit/ui`.
+The generated files are plain React + Tailwind components that you can edit freely.
+
+```bash
+pnpm dlx @map-kit/cli add map-controls popup-card marker-badge map-legend
+```
+
+By default files are written to `components/map-kit`.
+
+```txt
+components/map-kit/
+  map-controls.tsx
+  marker-badge.tsx
+  popup-card.tsx
+  map-legend.tsx
+  utils.ts
+```
+
+Use a custom output directory when your app keeps UI components somewhere else:
+
+```bash
+pnpm dlx @map-kit/cli add --out src/components/map-kit
+```
+
+Available registry items:
+
+```bash
+pnpm dlx @map-kit/cli list
+```
+
+Overwrite an existing generated component:
+
+```bash
+pnpm dlx @map-kit/cli add map-controls --force
+```
+
+Preview without writing files:
+
+```bash
+pnpm dlx @map-kit/cli add map-controls --dry-run
+```
 
 ## Styled Controls
 
@@ -30,6 +74,12 @@ import { MapControls } from "@map-kit/ui";
     reset={{ center: [28.6139, 77.209], zoom: 10 }}
   />
 </Map>;
+```
+
+With copied components, import from your app path instead:
+
+```tsx
+import { MapControls } from "@/components/map-kit/map-controls";
 ```
 
 ## Marker Badge
