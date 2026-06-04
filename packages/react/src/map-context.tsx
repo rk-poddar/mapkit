@@ -21,7 +21,7 @@ export function MapContextProvider({
   layers: initialLayers = [],
   ...lifecycle
 }: MapContextProviderProps) {
-  const { adapter, controller, engine, error, instance, isReady } = lifecycle;
+  const { adapter, container, controller, engine, error, instance, isReady } = lifecycle;
   const [layers, setLayers] = useState<ReadonlyMap<string, MapLayerState>>(() => {
     const nextLayers = new globalThis.Map<string, MapLayerState>();
 
@@ -63,6 +63,7 @@ export function MapContextProvider({
     () => ({
       adapter,
       controller,
+      container,
       engine,
       error,
       instance,
@@ -75,6 +76,7 @@ export function MapContextProvider({
     }),
     [
       adapter,
+      container,
       controller,
       engine,
       error,

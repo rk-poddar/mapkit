@@ -61,3 +61,7 @@ Runtime smoke tests:
 pnpm -r build
 pnpm test:e2e
 ```
+
+Rich primitive docs:
+
+- `docs/RICH_PRIMITIVES.md`

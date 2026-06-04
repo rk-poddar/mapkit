@@ -146,29 +146,49 @@ function createMarkerElement(marker: MarkerModel): HTMLElement {
 
 function syncMarkerElement(root: HTMLElement, marker: MarkerModel): void {
   root.replaceChildren();
+  const size = marker.size === "sm" ? 18 : marker.size === "lg" ? 30 : 24;
+  const dotSize = Math.max(6, Math.round(size * 0.36));
+  const label = marker.label?.slice(0, 3);
+  const variant = marker.variant ?? "pin";
+  const isPin = variant === "pin";
   root.style.position = "relative";
   root.style.display = "block";
-  root.style.width = "24px";
-  root.style.height = "24px";
+  root.style.width = `${size}px`;
+  root.style.height = `${size}px`;
   root.style.opacity = marker.visible === false ? "0" : "1";
+  root.title = marker.tooltip ?? marker.title ?? "";
 
   const pin = document.createElement("span");
-  pin.style.display = "block";
-  pin.style.width = "22px";
-  pin.style.height = "22px";
-  pin.style.borderRadius = "999px 999px 999px 0";
+  pin.style.alignItems = "center";
+  pin.style.display = "flex";
+  pin.style.justifyContent = "center";
+  pin.style.width = `${size}px`;
+  pin.style.height = `${size}px`;
+  pin.style.borderRadius = variant === "badge" ? "999px" : "999px 999px 999px 0";
   pin.style.background = marker.color ?? "#2563eb";
   pin.style.border = "3px solid white";
   pin.style.boxShadow = "0 4px 12px rgb(15 23 42 / 30%)";
-  pin.style.transform = "rotate(-45deg)";
+  pin.style.boxSizing = "border-box";
+  pin.style.color = "white";
+  pin.style.font = "700 11px/1 system-ui, sans-serif";
+  pin.style.transform = isPin ? "rotate(-45deg)" : "none";
+
+  if (label) {
+    const labelElement = document.createElement("span");
+    labelElement.textContent = label;
+    labelElement.style.transform = isPin ? "rotate(45deg)" : "none";
+    pin.append(labelElement);
+    root.append(pin);
+    return;
+  }
 
   const dot = document.createElement("span");
   dot.style.position = "absolute";
-  dot.style.left = "7px";
-  dot.style.top = "7px";
+  dot.style.left = `${Math.round((size - dotSize) / 2)}px`;
+  dot.style.top = `${Math.round((size - dotSize) / 2)}px`;
   dot.style.display = "block";
-  dot.style.width = "8px";
-  dot.style.height = "8px";
+  dot.style.width = `${dotSize}px`;
+  dot.style.height = `${dotSize}px`;
   dot.style.borderRadius = "999px";
   dot.style.background = "white";
 
@@ -385,7 +405,11 @@ export function createMapboxAdapter(): MapAdapter {
       const popupContent = getMarkerPopupContent(marker);
       let popup: MapboxPopup | undefined;
       if (popupContent) {
-        popup = new mapboxgl.Popup({ offset: 24 }).setHTML(popupContent);
+        popup = new mapboxgl.Popup({
+          closeButton: marker.popupOptions?.closeButton,
+          maxWidth: marker.popupOptions?.maxWidth ? `${marker.popupOptions.maxWidth}px` : undefined,
+          offset: 24,
+        }).setHTML(popupContent);
         mapMarker.setPopup(popup);
       }
 
@@ -404,7 +428,11 @@ export function createMapboxAdapter(): MapAdapter {
 
       const popupContent = getMarkerPopupContent(marker);
       if (popupContent) {
-        nativeLayer.popup ??= new mapboxgl.Popup({ offset: 24 });
+        nativeLayer.popup ??= new mapboxgl.Popup({
+          closeButton: marker.popupOptions?.closeButton,
+          maxWidth: marker.popupOptions?.maxWidth ? `${marker.popupOptions.maxWidth}px` : undefined,
+          offset: 24,
+        });
         nativeLayer.popup.setHTML(popupContent);
         nativeLayer.marker.setPopup(nativeLayer.popup);
       } else {

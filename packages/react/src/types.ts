@@ -58,6 +58,7 @@ export type MapLifecycleState = {
   adapter?: MapAdapter;
   controller: MapController;
   instance?: MapAdapterInstance;
+  container?: HTMLElement;
   isReady: boolean;
   error?: MapKitError;
 };
@@ -76,6 +77,32 @@ export type MarkerProps = MarkerModel & {
 
 export type PopupProps = {
   children: ReactNode;
+  maxWidth?: number;
+  closeButton?: boolean;
+};
+
+export type TooltipProps = {
+  children: ReactNode;
+};
+
+export type MapControlsPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+export type MapControlsProps = {
+  position?: MapControlsPosition;
+  zoom?: boolean;
+  fullscreen?: boolean;
+  reset?: boolean | {
+    center: LatLng;
+    zoom?: number;
+  };
+  className?: string;
+  style?: CSSProperties;
+  labels?: {
+    zoomIn?: string;
+    zoomOut?: string;
+    reset?: string;
+    fullscreen?: string;
+  };
 };
 
 export type RouteProps = RouteModel;

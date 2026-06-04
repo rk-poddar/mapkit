@@ -1,7 +1,17 @@
 "use client";
 
 import { leafletAdapter } from "@map-kit/leaflet";
-import { Circle, FitBounds, Map, Marker, Polygon, Popup, Route } from "@map-kit/react";
+import {
+  Circle,
+  FitBounds,
+  Map,
+  MapControls,
+  Marker,
+  Polygon,
+  Popup,
+  Route,
+  Tooltip,
+} from "@map-kit/react";
 import { useState } from "react";
 
 const delhi = [28.6139, 77.209] as const;
@@ -45,7 +55,9 @@ export default function HomePage() {
           provider="osm"
           center={delhi}
           zoom={10}
+          controls={{ zoom: false }}
         >
+          <MapControls position="top-right" fullscreen reset={{ center: delhi, zoom: 10 }} />
           <FitBounds bounds={[gurugram, noida]} options={{ padding: 40 }} />
           {showRoute ? (
             <Route
@@ -81,12 +93,23 @@ export default function HomePage() {
               title="New Delhi"
               description="Map Kit Leaflet marker"
               color={useAlternateRoute ? "#7c3aed" : "#2563eb"}
+              label="DL"
+              size="lg"
+              variant="badge"
             >
-              <Popup>Declarative popup content from Marker children.</Popup>
+              <Popup maxWidth={280}>Declarative popup content from Marker children.</Popup>
+              <Tooltip>New Delhi marker</Tooltip>
             </Marker>
           ) : null}
-          <Marker id="gurugram" position={gurugram} title="Gurugram" color="#0f766e" />
-          <Marker id="noida" position={noida} title="Noida" color="#dc2626" />
+          <Marker
+            id="gurugram"
+            position={gurugram}
+            title="Gurugram"
+            color="#0f766e"
+            label="GGN"
+            variant="pin"
+          />
+          <Marker id="noida" position={noida} title="Noida" color="#dc2626" variant="dot" />
         </Map>
       </section>
     </main>

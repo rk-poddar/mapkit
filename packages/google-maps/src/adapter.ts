@@ -94,11 +94,17 @@ function getMaps(instance: MapAdapterInstance): typeof google.maps {
   return maps;
 }
 
-function createMarkerSvg(color: string): string {
+function createMarkerSvg(color: string, marker: MarkerModel): string {
+  const label = marker.label?.slice(0, 3);
+  const isBadge = marker.variant === "badge" || marker.variant === "dot";
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="30" viewBox="0 0 24 30">`,
-    `<path fill="${color}" stroke="white" stroke-width="3" d="M12 1.5c5.8 0 10.5 4.7 10.5 10.5 0 7.9-10.5 16.5-10.5 16.5S1.5 19.9 1.5 12C1.5 6.2 6.2 1.5 12 1.5Z"/>`,
-    `<circle cx="12" cy="12" r="4" fill="white"/>`,
+    isBadge
+      ? `<circle cx="12" cy="12" r="10.5" fill="${color}" stroke="white" stroke-width="3"/>`
+      : `<path fill="${color}" stroke="white" stroke-width="3" d="M12 1.5c5.8 0 10.5 4.7 10.5 10.5 0 7.9-10.5 16.5-10.5 16.5S1.5 19.9 1.5 12C1.5 6.2 6.2 1.5 12 1.5Z"/>`,
+    label
+      ? `<text x="12" y="15" text-anchor="middle" font-size="9" font-weight="700" font-family="Arial,sans-serif" fill="white">${label}</text>`
+      : `<circle cx="12" cy="12" r="4" fill="white"/>`,
     `</svg>`,
   ].join("");
 }
@@ -108,11 +114,14 @@ function createMarkerIcon(
   marker: MarkerModel,
 ): google.maps.Icon {
   const color = marker.color ?? "#2563eb";
+  const scale = marker.size === "sm" ? 0.82 : marker.size === "lg" ? 1.2 : 1;
+  const width = Math.round(24 * scale);
+  const height = Math.round(30 * scale);
 
   return {
-    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(createMarkerSvg(color))}`,
-    scaledSize: new maps.Size(24, 30),
-    anchor: new maps.Point(12, 30),
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(createMarkerSvg(color, marker))}`,
+    scaledSize: new maps.Size(width, height),
+    anchor: new maps.Point(width / 2, marker.variant === "badge" || marker.variant === "dot" ? height / 2 : height),
   };
 }
 
@@ -270,7 +279,7 @@ export function createGoogleMapsAdapter(): MapAdapter {
       const googleMarker = new maps.Marker({
         map,
         position: toGoogleLatLngLiteral(marker.position),
-        title: marker.title,
+        title: marker.tooltip ?? marker.title,
         draggable: marker.draggable,
         opacity: marker.visible === false ? 0 : 1,
         zIndex: marker.zIndex,
@@ -278,7 +287,12 @@ export function createGoogleMapsAdapter(): MapAdapter {
       });
 
       const popupContent = getMarkerPopupContent(marker);
-      const infoWindow = popupContent ? new maps.InfoWindow({ content: popupContent }) : undefined;
+      const infoWindow = popupContent
+        ? new maps.InfoWindow({
+            content: popupContent,
+            maxWidth: marker.popupOptions?.maxWidth,
+          })
+        : undefined;
       if (infoWindow) {
         googleMarker.addListener("click", () => {
           infoWindow.open({ map, anchor: googleMarker });
@@ -296,7 +310,7 @@ export function createGoogleMapsAdapter(): MapAdapter {
       const maps = getMaps(instance);
       const nativeLayer = getMarkerHandle(handle);
       nativeLayer.marker.setPosition(toGoogleLatLngLiteral(marker.position));
-      nativeLayer.marker.setTitle(marker.title ?? "");
+      nativeLayer.marker.setTitle(marker.tooltip ?? marker.title ?? "");
       nativeLayer.marker.setDraggable(marker.draggable ?? false);
       nativeLayer.marker.setOpacity(marker.visible === false ? 0 : 1);
       nativeLayer.marker.setZIndex(marker.zIndex ?? null);

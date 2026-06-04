@@ -7,7 +7,7 @@ import {
   type MapKitError,
   type ProviderConfig,
 } from "@map-kit/core";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getMapAdapter } from "../adapter-registry";
 import { createFallbackMapController } from "../controller";
 import { MapLayerSync } from "../layer-sync";
@@ -55,6 +55,7 @@ export function Map(props: MapProps) {
     onReady,
   } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const adapterRef = useRef<MapAdapter | undefined>(undefined);
   const instanceRef = useRef<MapAdapterInstance | undefined>(undefined);
   const viewStateRef = useRef({ center, zoom });
@@ -68,6 +69,11 @@ export function Map(props: MapProps) {
     () => resolveProviderConfig(props),
     [props.accessToken, props.apiKey, props.provider],
   );
+
+  const setContainerRef = useCallback((node: HTMLDivElement | null) => {
+    containerRef.current = node;
+    setContainer(node);
+  }, []);
 
   const controller = useMemo(
     () =>
@@ -240,14 +246,18 @@ export function Map(props: MapProps) {
       engine={engine}
       error={error}
       instance={instance}
+      container={container ?? undefined}
       isReady={isReady}
     >
       <div
-        ref={containerRef}
+        ref={setContainerRef}
         className={className}
         data-mapkit-engine={engine}
         data-mapkit-ready={isReady ? "true" : "false"}
-        style={style}
+        style={{
+          position: style?.position ?? "relative",
+          ...style,
+        }}
       >
         {!adapter ? fallback : null}
       </div>

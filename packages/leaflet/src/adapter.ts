@@ -72,34 +72,39 @@ function createHandle(id: string, nativeLayer: LeafletLayer): MapLayerHandle {
 
 function createMarkerIcon(L: LeafletModule, marker: MarkerModel): Leaflet.DivIcon {
   const color = marker.color ?? "#2563eb";
+  const size = marker.size === "sm" ? 18 : marker.size === "lg" ? 30 : 24;
+  const dotSize = Math.max(6, Math.round(size * 0.36));
+  const label = marker.label?.slice(0, 3);
+  const variant = marker.variant ?? "pin";
+  const pinRadius = variant === "badge" ? "999px" : "999px 999px 999px 0";
+  const pinTransform = variant === "pin" ? "rotate(-45deg)" : "none";
+  const labelTransform = variant === "pin" ? "rotate(45deg)" : "none";
 
   return L.divIcon({
     className: "mapkit-leaflet-marker",
     html: [
       `<span style="`,
+      "align-items:center;",
       "display:block;",
-      "width:22px;",
-      "height:22px;",
-      "border-radius:999px 999px 999px 0;",
+      variant === "badge" ? "display:flex;" : "",
+      "justify-content:center;",
+      `width:${size}px;`,
+      `height:${size}px;`,
+      `border-radius:${pinRadius};`,
       `background:${color};`,
       "border:3px solid white;",
       "box-shadow:0 4px 12px rgb(15 23 42 / 30%);",
-      "transform:rotate(-45deg);",
+      `transform:${pinTransform};`,
+      "color:white;",
+      "font:700 11px/1 system-ui,sans-serif;",
       `"></span>`,
-      `<span style="`,
-      "position:absolute;",
-      "left:7px;",
-      "top:7px;",
-      "display:block;",
-      "width:8px;",
-      "height:8px;",
-      "border-radius:999px;",
-      "background:white;",
-      `"></span>`,
+      label
+        ? `<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:white;font:700 11px/1 system-ui,sans-serif;transform:${labelTransform};">${label}</span>`
+        : `<span style="position:absolute;left:${Math.round((size - dotSize) / 2)}px;top:${Math.round((size - dotSize) / 2)}px;display:block;width:${dotSize}px;height:${dotSize}px;border-radius:999px;background:white;"></span>`,
     ].join(""),
-    iconAnchor: [11, 22],
-    iconSize: [22, 22],
-    popupAnchor: [0, -22],
+    iconAnchor: [size / 2, variant === "pin" ? size : size / 2],
+    iconSize: [size, size],
+    popupAnchor: [0, -size],
   });
 }
 
@@ -217,7 +222,11 @@ export function createLeafletAdapter(): MapAdapter {
 
       const popupContent = getMarkerPopupContent(marker);
       if (popupContent) {
-        markerLayer.bindPopup(popupContent);
+        markerLayer.bindPopup(popupContent, marker.popupOptions);
+      }
+
+      if (marker.tooltip) {
+        markerLayer.bindTooltip(marker.tooltip);
       }
 
       return createHandle(marker.id, markerLayer);
@@ -232,9 +241,15 @@ export function createLeafletAdapter(): MapAdapter {
 
       const popupContent = getMarkerPopupContent(marker);
       if (popupContent) {
-        markerLayer.bindPopup(popupContent);
+        markerLayer.bindPopup(popupContent, marker.popupOptions);
       } else {
         markerLayer.unbindPopup();
+      }
+
+      if (marker.tooltip) {
+        markerLayer.bindTooltip(marker.tooltip);
+      } else {
+        markerLayer.unbindTooltip();
       }
     },
 

@@ -114,7 +114,15 @@ export type MarkerModel = BaseLayerModel & {
   title?: string;
   description?: string;
   popup?: string;
+  popupOptions?: {
+    maxWidth?: number;
+    closeButton?: boolean;
+  };
+  tooltip?: string;
   color?: string;
+  label?: string;
+  variant?: "pin" | "dot" | "badge";
+  size?: "sm" | "md" | "lg";
   draggable?: boolean;
 };
 
