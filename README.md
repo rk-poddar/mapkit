@@ -8,6 +8,7 @@ Current implementation status:
 - AI implementation workflow complete.
 - Engine comparison complete.
 - Adapter contract complete.
+- Adapter parity checklist complete.
 - Provider legal and billing guide complete.
 - `@map-kit/core` Phase 2 started with framework-agnostic types and utilities.
 - `@map-kit/react` Phase 3 started with engine-agnostic React primitives.
@@ -45,3 +46,7 @@ Mapbox docs:
 Google Maps docs:
 
 - `docs/GOOGLE_MAPS_QUICKSTART.md`
+
+Adapter QA:
+
+- `docs/ADAPTER_PARITY_CHECKLIST.md`
