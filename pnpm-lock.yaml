@@ -26,6 +26,9 @@ importers:
       '@map-kit/react':
         specifier: workspace:*
         version: link:../../packages/react
+      '@map-kit/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -281,6 +284,28 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/ui:
+    dependencies:
+      '@map-kit/react':
+        specifier: workspace:*
+        version: link:../react
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.16
+        version: 19.2.16
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.16)
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

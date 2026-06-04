@@ -13,6 +13,7 @@
   "dependencies": {
     "@map-kit/leaflet": "workspace:*",
     "@map-kit/react": "workspace:*",
+    "@map-kit/ui": "workspace:*",
     "leaflet": "^1.9.4",
     "next": "^16.1.6",
     "react": "^19.2.7",

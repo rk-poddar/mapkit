@@ -5,13 +5,13 @@ import {
   Circle,
   FitBounds,
   Map,
-  MapControls,
   Marker,
   Polygon,
   Popup,
   Route,
   Tooltip,
 } from "@map-kit/react";
+import { MapControls } from "@map-kit/ui";
 import { useState } from "react";
 
 const delhi = [28.6139, 77.209] as const;

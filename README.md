@@ -65,3 +65,7 @@ pnpm test:e2e
 Rich primitive docs:
 
 - `docs/RICH_PRIMITIVES.md`
+
+Styled UI docs:
+
+- `docs/STYLED_UI.md`

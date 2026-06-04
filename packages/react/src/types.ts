@@ -96,7 +96,10 @@ export type MapControlsProps = {
     zoom?: number;
   };
   className?: string;
+  buttonClassName?: string;
+  buttonStyle?: CSSProperties;
   style?: CSSProperties;
+  unstyled?: boolean;
   labels?: {
     zoomIn?: string;
     zoomOut?: string;

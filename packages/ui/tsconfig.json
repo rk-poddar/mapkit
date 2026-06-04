@@ -5,7 +5,8 @@
     "outDir": "dist",
     "rootDir": "src",
     "paths": {
-      "@map-kit/core": ["packages/core/dist/index.d.ts"]
+      "@map-kit/core": ["packages/core/dist/index.d.ts"],
+      "@map-kit/react": ["packages/react/dist/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

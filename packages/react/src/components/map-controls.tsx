@@ -29,12 +29,15 @@ const BUTTON_STYLE: CSSProperties = {
 };
 
 export function MapControls({
+  buttonClassName,
+  buttonStyle,
   position = "top-right",
   zoom = true,
   fullscreen = false,
   reset = false,
   className,
   style,
+  unstyled = false,
   labels,
 }: MapControlsProps) {
   const { container, controller } = useMapContext();
@@ -46,23 +49,24 @@ export function MapControls({
   const controls = (
     <div
       className={className}
-      data-mapkit-controls={position}
-      style={{
-        alignItems: "center",
-        display: "flex",
-        gap: 8,
+        data-mapkit-controls={position}
+        style={{
+          alignItems: "center",
+          display: "flex",
+          gap: 8,
         pointerEvents: "auto",
         position: "absolute",
         zIndex: 500,
         ...POSITION_STYLE[position],
-        ...style,
-      }}
+          ...style,
+        }}
     >
       {zoom ? (
         <>
           <button
             aria-label={labels?.zoomIn ?? "Zoom in"}
-            style={BUTTON_STYLE}
+            className={buttonClassName}
+            style={unstyled ? buttonStyle : { ...BUTTON_STYLE, ...buttonStyle }}
             type="button"
             onClick={() => controller.setView(controller.getCenter(), controller.getZoom() + 1)}
           >
@@ -70,7 +74,8 @@ export function MapControls({
           </button>
           <button
             aria-label={labels?.zoomOut ?? "Zoom out"}
-            style={BUTTON_STYLE}
+            className={buttonClassName}
+            style={unstyled ? buttonStyle : { ...BUTTON_STYLE, ...buttonStyle }}
             type="button"
             onClick={() => controller.setView(controller.getCenter(), controller.getZoom() - 1)}
           >
@@ -81,7 +86,8 @@ export function MapControls({
       {reset ? (
         <button
           aria-label={labels?.reset ?? "Reset view"}
-          style={{ ...BUTTON_STYLE, fontSize: 13 }}
+          className={buttonClassName}
+          style={unstyled ? buttonStyle : { ...BUTTON_STYLE, fontSize: 13, ...buttonStyle }}
           type="button"
           onClick={() => {
             if (typeof reset === "object") {
@@ -98,7 +104,8 @@ export function MapControls({
       {fullscreen ? (
         <button
           aria-label={labels?.fullscreen ?? "Toggle fullscreen"}
-          style={BUTTON_STYLE}
+          className={buttonClassName}
+          style={unstyled ? buttonStyle : { ...BUTTON_STYLE, ...buttonStyle }}
           type="button"
           onClick={() => {
             if (document.fullscreenElement) {
