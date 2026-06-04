@@ -4,6 +4,8 @@ dist
 .turbo
 .pnpm-store
 coverage
+playwright-report
+test-results
 *.tsbuildinfo
 .DS_Store
 .env

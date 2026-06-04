@@ -12,12 +12,26 @@ const faridabad = [28.4089, 77.3178] as const;
 const route = [gurugram, delhi, noida];
 const alternateRoute = [gurugram, faridabad, noida];
 const polygon = [gurugram, delhi, noida, faridabad];
+const offlineStyle = {
+  version: 8,
+  sources: {},
+  layers: [],
+} as const;
+
+function shouldUseOfflineStyle() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return new URLSearchParams(window.location.search).get("style") === "offline";
+}
 
 export default function HomePage() {
   const [showRoute, setShowRoute] = useState(true);
   const [showCircle, setShowCircle] = useState(true);
   const [showPolygon, setShowPolygon] = useState(true);
   const [useAlternateRoute, setUseAlternateRoute] = useState(false);
+  const [useOfflineStyle] = useState(shouldUseOfflineStyle);
 
   return (
     <main className="page-shell">
@@ -41,6 +55,7 @@ export default function HomePage() {
           provider="osm"
           center={delhi}
           zoom={9}
+          engineOptions={useOfflineStyle ? { style: offlineStyle } : undefined}
         >
           <FitBounds bounds={[gurugram, noida]} options={{ padding: 48 }} />
           {showRoute ? (

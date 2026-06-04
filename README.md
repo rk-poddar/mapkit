@@ -19,6 +19,7 @@ Current implementation status:
 - Phase 7A normalized adapter build outputs and package exports.
 - Phase 7B added adapter smoke tests and parity checklist coverage.
 - Phase 7C added CI for tests, typechecks, workspace builds, and example builds.
+- Phase 7D added browser runtime smoke checks for example apps.
 - `examples/next-basic` renders the first Leaflet-powered map.
 - `examples/next-maplibre` renders the first MapLibre-powered map.
 - `examples/next-mapbox` renders the first Mapbox-powered map when a Mapbox token is provided.
@@ -26,7 +27,7 @@ Current implementation status:
 
 Next phase:
 
-- Add browser runtime smoke checks for example apps, then start richer map primitives.
+- Start richer map primitives and interaction blocks.
 
 Run the basic example:
 
@@ -53,3 +54,10 @@ Google Maps docs:
 Adapter QA:
 
 - `docs/ADAPTER_PARITY_CHECKLIST.md`
+
+Runtime smoke tests:
+
+```bash
+pnpm -r build
+pnpm test:e2e
+```
