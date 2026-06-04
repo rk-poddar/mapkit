@@ -16,6 +16,9 @@ Current implementation status:
 - `@map-kit/maplibre` Phase 5 started with the first WebGL adapter.
 - `@map-kit/mapbox` Phase 6A started with Mapbox GL adapter parity.
 - `@map-kit/google-maps` Phase 6B started with Google Maps adapter parity.
+- Phase 7A normalized adapter build outputs and package exports.
+- Phase 7B added adapter smoke tests and parity checklist coverage.
+- Phase 7C added CI for tests, typechecks, workspace builds, and example builds.
 - `examples/next-basic` renders the first Leaflet-powered map.
 - `examples/next-maplibre` renders the first MapLibre-powered map.
 - `examples/next-mapbox` renders the first Mapbox-powered map when a Mapbox token is provided.
@@ -23,7 +26,7 @@ Current implementation status:
 
 Next phase:
 
-- Add adapter hardening tests and normalize package build output across adapters.
+- Add browser runtime smoke checks for example apps, then start richer map primitives.
 
 Run the basic example:
 
