@@ -1,3 +1,4 @@
+import { CodeBlock } from "../../code-block";
 import { installSteps } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
 
@@ -51,9 +52,7 @@ export default function InstallationPage() {
           {snippets.map((snippet) => (
             <article className="doc-card" key={snippet.title}>
               <h2>{snippet.title}</h2>
-              <pre>
-                <code>{snippet.code}</code>
-              </pre>
+              <CodeBlock code={snippet.code} label={snippet.title} />
             </article>
           ))}
         </div>

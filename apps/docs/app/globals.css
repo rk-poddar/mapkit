@@ -36,11 +36,24 @@ code {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 .site-header {
   position: sticky;
   z-index: 30;
   top: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(240px, 420px) auto;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
@@ -88,6 +101,102 @@ code {
 .site-header nav a:hover {
   background: #e2e8f0;
   color: #0f172a;
+}
+
+.site-header nav a[aria-current="page"] {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.docs-search {
+  position: relative;
+  width: min(420px, 100%);
+}
+
+.docs-search input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  outline: 0;
+  padding: 0 14px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.docs-search input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgb(37 99 235 / 12%);
+}
+
+.docs-search-panel {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 24px 54px rgb(15 23 42 / 18%);
+  display: none;
+  max-height: min(460px, calc(100vh - 110px));
+  overflow: auto;
+}
+
+.docs-search:focus-within .docs-search-panel {
+  display: block;
+}
+
+.docs-search-panel a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.docs-search-panel a:last-child {
+  border-bottom: 0;
+}
+
+.docs-search-panel a:hover {
+  background: #f8fafc;
+}
+
+.docs-search-panel span {
+  grid-row: span 2;
+  align-self: start;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 5px 8px;
+}
+
+.docs-search-panel strong {
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs-search-panel small,
+.docs-search-panel p {
+  overflow: hidden;
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hero,
@@ -617,6 +726,55 @@ code {
   font-size: 13px;
 }
 
+.code-block {
+  overflow: hidden;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #0f172a;
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 10px 0 14px;
+  border-bottom: 1px solid rgb(148 163 184 / 20%);
+  background: #111827;
+}
+
+.code-block-header span {
+  overflow: hidden;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.code-block-header button {
+  min-height: 30px;
+  border: 1px solid rgb(203 213 225 / 24%);
+  border-radius: 7px;
+  background: rgb(255 255 255 / 8%);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 0 10px;
+}
+
+.code-block-header button:hover {
+  border-color: rgb(147 197 253 / 80%);
+  background: rgb(37 99 235 / 84%);
+}
+
+.code-block pre {
+  border: 0;
+  border-radius: 0;
+}
+
 .vertical {
   grid-template-columns: 1fr;
 }
@@ -670,6 +828,14 @@ code {
   background: #f8fafc;
   color: #0f172a;
   padding: 10px;
+}
+
+.detail-aside .code-block {
+  width: 100%;
+}
+
+.detail-aside .code-block pre {
+  max-height: 170px;
 }
 
 .component-preview {
@@ -818,8 +984,12 @@ code {
 @media (max-width: 960px) {
   .site-header {
     align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
     padding: 14px 24px;
+  }
+
+  .docs-search {
+    width: 100%;
   }
 
   .site-header nav {

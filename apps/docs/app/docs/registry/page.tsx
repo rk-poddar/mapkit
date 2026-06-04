@@ -1,3 +1,4 @@
+import { CodeBlock } from "../../code-block";
 import { componentDocs } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
 
@@ -36,9 +37,7 @@ export default function RegistryPage() {
         <div className="detail-main">
           <article className="doc-card">
             <h2>Index payload</h2>
-            <pre>
-              <code>{registryPayload}</code>
-            </pre>
+            <CodeBlock code={registryPayload} label="registry.json" />
           </article>
           <article className="doc-card">
             <h2>Current registry items</h2>

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { CodeBlock } from "../../code-block";
 import { ComponentPreview } from "../component-preview";
 import { componentDocs, getComponentDoc } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
@@ -29,7 +30,7 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
       <section className="detail-layout">
         <aside className="detail-aside">
           <span className="pill">Install</span>
-          <code>{component.command}</code>
+          <CodeBlock code={component.command} label="Install command" />
           <span className="pill">File</span>
           <code>{component.fileName}</code>
           <span className="pill">Tags</span>
@@ -42,15 +43,11 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
         <div className="detail-main">
           <article className="doc-card">
             <h2>Usage</h2>
-            <pre>
-              <code>{component.usage}</code>
-            </pre>
+            <CodeBlock code={component.usage} label="Usage" />
           </article>
           <article className="doc-card">
             <h2>Source preview</h2>
-            <pre>
-              <code>{component.source}</code>
-            </pre>
+            <CodeBlock code={component.source} label={component.fileName} />
           </article>
         </div>
       </section>

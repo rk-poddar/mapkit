@@ -1,3 +1,4 @@
+import { CodeBlock } from "../../code-block";
 import { engineDocs } from "../../docs-data";
 import { SiteHeader } from "../../site-header";
 
@@ -35,9 +36,7 @@ export default function EnginesPage() {
         {engineCommands.map(([name, command]) => (
           <article className="doc-card" key={name}>
             <h2>{name}</h2>
-            <pre>
-              <code>{command}</code>
-            </pre>
+            <CodeBlock code={command} label={`${name} install`} />
           </article>
         ))}
       </section>

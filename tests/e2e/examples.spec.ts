@@ -89,6 +89,7 @@ test.describe("example runtime smoke checks", () => {
     await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
     await expect(page.getByText("pnpm dlx @map-kit/cli add map-controls")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Source preview" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Copy Usage" })).toBeVisible();
   });
 
   test("Docs installation and registry pages render guide content", async ({ page }) => {
@@ -99,5 +100,15 @@ test.describe("example runtime smoke checks", () => {
     await page.goto(`${examples.docs}/docs/registry`);
     await expect(page.getByRole("heading", { name: /Component metadata/ })).toBeVisible();
     await expect(page.getByText("\"schemaVersion\": \"0.1.0\"")).toBeVisible();
+  });
+
+  test("Docs search jumps to component detail pages", async ({ page }) => {
+    await page.goto(examples.docs);
+
+    await page.getByLabel("Search docs").fill("legend");
+    await page.getByRole("link", { name: "Search result: Map Legend" }).click();
+
+    await expect(page).toHaveURL(/\/components\/map-legend$/);
+    await expect(page.getByRole("heading", { name: "Map Legend" })).toBeVisible();
   });
 });
