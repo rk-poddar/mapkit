@@ -49,6 +49,18 @@ Available registry items:
 pnpm dlx @map-kit/cli list
 ```
 
+Print the registry index JSON:
+
+```bash
+pnpm dlx @map-kit/cli registry
+```
+
+Print a full component payload:
+
+```bash
+pnpm dlx @map-kit/cli registry map-controls
+```
+
 Overwrite an existing generated component:
 
 ```bash
@@ -125,3 +137,7 @@ The components follow shadcn-style composition:
 - app-owned override via `className`
 - no global CSS dependency
 - no lock-in to a theme provider
+
+## Registry Contract
+
+The JSON shape is documented in `docs/REGISTRY.md`.

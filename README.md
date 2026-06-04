@@ -70,3 +70,7 @@ Styled UI docs:
 
 - `docs/STYLED_UI.md`
 - `docs/STYLED_UI.md#copy-components-into-your-app`
+
+Registry docs:
+
+- `docs/REGISTRY.md`

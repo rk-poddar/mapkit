@@ -14,7 +14,7 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @map-kit/cli yet\"",
-    "test": "vitest run src/**/*.spec.ts"
+    "test": "vitest run --root ../.. ./packages/cli/src/index.spec.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
