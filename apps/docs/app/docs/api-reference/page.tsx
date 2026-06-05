@@ -1,6 +1,6 @@
 import { CodeBlock } from "../../code-block";
 import { DocsShell } from "../../docs-shell";
-import { SiteHeader } from "../../site-header";
+import { tocFromTitles } from "../../docs-nav";
 
 const anatomy = `<Map adapter={leafletAdapter} center={[28.6139, 77.209]} zoom={10}>
   <MapControls position="top-right" />
@@ -23,54 +23,51 @@ const rows = [
 
 export default function ApiReferencePage() {
   return (
-    <main>
-      <SiteHeader />
-      <DocsShell toc={["Component Anatomy", "Core Props", "Controller", "Adapters"]}>
-        <header className="docs-page-header">
-          <h1>API Reference</h1>
-          <p>Shared React primitives for multiple map engines, with adapter escape hatches when you need them.</p>
+    <DocsShell toc={tocFromTitles(["Component Anatomy", "Core Props", "Controller", "Adapters"])}>
+        <header className="space-y-3">
+          <h1 className="text-4xl font-semibold tracking-tight">API Reference</h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">Shared React primitives for multiple map engines, with adapter escape hatches when you need them.</p>
         </header>
 
-        <section className="docs-prose-section" id="component-anatomy">
-          <h2>Component Anatomy</h2>
-          <p>Compose map features directly inside the map tree. Child primitives register themselves with the adapter.</p>
-          <CodeBlock code={anatomy} label="Anatomy" />
+        <section className="mt-12 space-y-5 scroll-m-24" id="component-anatomy">
+          <h2 className="text-2xl font-semibold tracking-tight">Component Anatomy</h2>
+          <p className="docs-prose">Compose map features directly inside the map tree. Child primitives register themselves with the adapter.</p>
+          <CodeBlock code={anatomy} />
         </section>
 
-        <section className="docs-prose-section" id="core-props">
-          <h2>Core Props</h2>
-          <div className="props-table" role="table" aria-label="Map Kit core props">
-            <div role="row">
-              <strong>Primitive</strong>
-              <strong>Common props</strong>
-              <strong>Description</strong>
+        <section className="mt-12 space-y-5 scroll-m-24" id="core-props">
+          <h2 className="text-2xl font-semibold tracking-tight">Core Props</h2>
+          <div className="overflow-hidden rounded-lg border">
+            <div className="bg-muted/30 grid grid-cols-[150px_minmax(0,1fr)_minmax(0,1fr)] gap-4 border-b px-4 py-3 text-sm font-medium">
+              <span>Primitive</span>
+              <span>Common props</span>
+              <span>Description</span>
             </div>
             {rows.map(([primitive, props, description]) => (
-              <div role="row" key={primitive}>
-                <code>{primitive}</code>
-                <span>{props}</span>
-                <p>{description}</p>
+              <div className="grid grid-cols-[150px_minmax(0,1fr)_minmax(0,1fr)] gap-4 border-b px-4 py-4 last:border-b-0" key={primitive}>
+                <code className="bg-muted h-fit w-fit rounded-md px-1.5 py-0.5 text-sm">{primitive}</code>
+                <span className="text-muted-foreground text-sm leading-6">{props}</span>
+                <p className="text-muted-foreground text-sm leading-6">{description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="docs-prose-section" id="controller">
-          <h2>Controller</h2>
-          <p>
+        <section className="mt-12 space-y-5 scroll-m-24" id="controller">
+          <h2 className="text-2xl font-semibold tracking-tight">Controller</h2>
+          <p className="docs-prose">
             The controller normalizes common imperative actions so teams can animate vehicles, fit route bounds, reset
             views, or synchronize external UI without knowing the current engine.
           </p>
         </section>
 
-        <section className="docs-prose-section" id="adapters">
-          <h2>Adapters</h2>
-          <p>
+        <section className="mt-12 space-y-5 scroll-m-24" id="adapters">
+          <h2 className="text-2xl font-semibold tracking-tight">Adapters</h2>
+          <p className="docs-prose">
             Adapter packages implement the engine-specific work. Start with one adapter, then add more when your product
             genuinely needs provider choice.
           </p>
         </section>
-      </DocsShell>
-    </main>
+    </DocsShell>
   );
 }

@@ -1,7 +1,8 @@
 import { CodeBlock } from "../../code-block";
 import { DocsShell } from "../../docs-shell";
+import { tocFromTitles } from "../../docs-nav";
 import { installSteps } from "../../docs-data";
-import { SiteHeader } from "../../site-header";
+import { Card } from "@/components/ui/card";
 
 const snippets = [
   {
@@ -21,42 +22,41 @@ import { Map, Marker } from "@map-kit/react";
 
 export default function InstallationPage() {
   return (
-    <main>
-      <SiteHeader />
-      <DocsShell toc={["Prerequisites", "Installation", "Usage"]}>
-        <header className="docs-page-header">
-          <h1>Installation</h1>
-          <p>How to install and set up Map Kit in your project.</p>
+    <DocsShell toc={tocFromTitles(["Prerequisites", "Installation", "Usage"])}>
+        <header className="space-y-3">
+          <h1 className="text-4xl font-semibold tracking-tight">Installation</h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">How to install and set up Map Kit in your project.</p>
         </header>
 
-        <section className="docs-prose-section" id="prerequisites">
-          <h2>Prerequisites</h2>
-          <p>A React or Next.js project. Tailwind and shadcn/ui patterns are recommended for copied UI blocks.</p>
+        <section className="mt-12 space-y-5 scroll-m-24" id="prerequisites">
+          <h2 className="text-2xl font-semibold tracking-tight">Prerequisites</h2>
+          <p className="docs-prose">A React or Next.js project. Tailwind and shadcn/ui patterns are recommended for copied UI blocks.</p>
         </section>
 
-        <section className="docs-prose-section" id="installation">
-          <h2>Installation</h2>
-          <p>Start with the React primitives and one map engine adapter:</p>
-          <div className="steps vertical">
+        <section className="mt-12 space-y-5 scroll-m-24" id="installation">
+          <h2 className="text-2xl font-semibold tracking-tight">Installation</h2>
+          <p className="docs-prose">Start with the React primitives and one map engine adapter:</p>
+          <div className="grid gap-3">
             {installSteps.map((step, index) => (
-              <div className="step-card" key={step}>
-                <span>{index + 1}</span>
-                <code>{step}</code>
-              </div>
+              <Card className="flex items-center gap-3 p-4" key={step}>
+                <span className="bg-muted grid size-8 shrink-0 place-items-center rounded-md text-sm font-medium">{index + 1}</span>
+                <code className="text-muted-foreground overflow-auto text-sm">{step}</code>
+              </Card>
             ))}
           </div>
         </section>
 
-        <section className="docs-prose-section" id="usage">
-          <h2>Usage</h2>
-          {snippets.map((snippet) => (
-            <article className="doc-card" key={snippet.title}>
-              <h3>{snippet.title}</h3>
-              <CodeBlock code={snippet.code} label={snippet.title} />
-            </article>
-          ))}
+        <section className="mt-12 space-y-5 scroll-m-24" id="usage">
+          <h2 className="text-2xl font-semibold tracking-tight">Usage</h2>
+          <div className="grid gap-5">
+            {snippets.map((snippet) => (
+              <article className="space-y-3" key={snippet.title}>
+                <h3 className="font-semibold">{snippet.title}</h3>
+                <CodeBlock code={snippet.code} />
+              </article>
+            ))}
+          </div>
         </section>
-      </DocsShell>
-    </main>
+    </DocsShell>
   );
 }

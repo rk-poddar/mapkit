@@ -3,14 +3,22 @@ import type { MapLayerHandle } from "@map-kit/core";
 import { useMapContext } from "./map-context";
 import type { MapLayerState } from "./types";
 
+type StyleAwareNativeMap = {
+  on: (type: "style.load", listener: () => void) => void;
+  off: (type: "style.load", listener: () => void) => void;
+};
+
 type StoredLayer = {
   kind: MapLayerState["kind"];
   handle: MapLayerHandle;
 };
 
 export function MapLayerSync() {
-  const { adapter, instance, isReady, layers } = useMapContext();
+  const { adapter, engine, instance, isReady, layers } = useMapContext();
   const handlesRef = useRef(new globalThis.Map<string, StoredLayer>());
+  const layersRef = useRef(layers);
+
+  layersRef.current = layers;
 
   useEffect(() => {
     if (!adapter || !instance || !isReady) {
@@ -48,6 +56,34 @@ export function MapLayerSync() {
       updateNativeLayer(adapter, instance, storedLayer.handle, layer);
     }
   }, [adapter, instance, isReady, layers]);
+
+  useEffect(() => {
+    if (!adapter || !instance || !isReady || engine !== "maplibre") {
+      return;
+    }
+
+    const nativeMap = instance.nativeMap as StyleAwareNativeMap | undefined;
+    if (!nativeMap || typeof nativeMap.on !== "function") {
+      return;
+    }
+
+    const resyncLayersAfterStyleChange = () => {
+      handlesRef.current.clear();
+
+      for (const layer of layersRef.current.values()) {
+        handlesRef.current.set(layer.model.id, {
+          kind: layer.kind,
+          handle: addNativeLayer(adapter, instance, layer),
+        });
+      }
+    };
+
+    nativeMap.on("style.load", resyncLayersAfterStyleChange);
+
+    return () => {
+      nativeMap.off("style.load", resyncLayersAfterStyleChange);
+    };
+  }, [adapter, engine, instance, isReady]);
 
   useEffect(() => {
     return () => {

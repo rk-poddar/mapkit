@@ -1,43 +1,46 @@
 import { ComponentPreview } from "./component-preview";
 import { DocsShell } from "../docs-shell";
+import { tocFromTitles } from "../docs-nav";
 import { componentDocs, componentGuides } from "../docs-data";
-import { SiteHeader } from "../site-header";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 
 export default function ComponentsPage() {
   return (
-    <main>
-      <SiteHeader />
-      <DocsShell toc={["Primitives", "Blocks"]}>
-        <header className="docs-page-header">
-          <h1>Components</h1>
-          <p>Map primitives and copy-paste UI blocks for real product surfaces.</p>
+    <DocsShell toc={tocFromTitles(["Primitives", "Blocks"])}>
+        <header className="space-y-3">
+          <h1 className="text-3xl font-semibold tracking-tight">Components</h1>
+          <p className="text-muted-foreground text-base leading-relaxed">Map primitives and copy-paste UI blocks for real product surfaces.</p>
         </header>
-        <section className="docs-prose-section" id="primitives">
-          <h2>Primitives</h2>
-          <div className="component-guide-grid">
+        <section className="mt-12 space-y-5 scroll-m-24" id="primitives">
+          <h2 className="text-xl font-semibold tracking-tight">Primitives</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
             {componentGuides.map((component) => (
-              <a className="component-guide-card" href={`/components/${component.slug}`} key={component.slug}>
-                <span>{component.name}</span>
-                <p>{component.description}</p>
-              </a>
+              <Card asChild className="p-5 transition-colors hover:bg-accent/50" key={component.slug}>
+                <a href={`/components/${component.slug}`}>
+                  <span className="text-lg font-semibold">{component.name}</span>
+                  <p className="text-muted-foreground mt-2 text-sm leading-6">{component.description}</p>
+                </a>
+              </Card>
             ))}
           </div>
         </section>
-        <section className="docs-prose-section" id="blocks">
-          <h2>Blocks</h2>
-          <div className="component-directory">
+        <section className="mt-12 space-y-5 scroll-m-24" id="blocks">
+          <h2 className="text-xl font-semibold tracking-tight">Blocks</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
             {componentDocs.map((component) => (
-              <a className="component-list-card" href={`/components/${component.slug}`} key={component.slug}>
-                <ComponentPreview component={component} />
-                <span className="pill">{component.category}</span>
-                <h2>{component.name}</h2>
-                <p>{component.description}</p>
-                <code>{component.command}</code>
-              </a>
+              <Card asChild className="p-4 transition-colors hover:bg-accent/50" key={component.slug}>
+                <a href={`/components/${component.slug}`}>
+                  <ComponentPreview component={component} />
+                  <Badge className="mt-4" variant="secondary">{component.category}</Badge>
+                  <h2 className="mt-3 text-lg font-semibold">{component.name}</h2>
+                  <p className="text-muted-foreground mt-2 text-sm leading-6">{component.description}</p>
+                  <code className="text-muted-foreground mt-4 block overflow-auto rounded-md bg-muted p-3 text-xs">{component.command}</code>
+                </a>
+              </Card>
             ))}
           </div>
         </section>
-      </DocsShell>
-    </main>
+    </DocsShell>
   );
 }

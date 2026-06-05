@@ -1,57 +1,26 @@
-"use client";
-
-import { useState } from "react";
+import { highlightCode } from "@/lib/highlight";
+import { CopyButton } from "@/components/docs/copy-button";
 
 type CodeBlockProps = {
   code: string;
-  label?: string;
+  language?: string;
+  showCopyButton?: boolean;
 };
 
-export function CodeBlock({ code, label = "Code" }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
-
-  function copyWithFallback() {
-    const textarea = document.createElement("textarea");
-    textarea.value = code;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.select();
-    const didCopy = document.execCommand("copy");
-    document.body.removeChild(textarea);
-    return didCopy;
-  }
-
-  async function copyCode() {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(code);
-      } else {
-        copyWithFallback();
-      }
-
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
-    } catch {
-      if (copyWithFallback()) {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1600);
-      }
-    }
-  }
+export async function CodeBlock({ code, language = "tsx", showCopyButton = true }: CodeBlockProps) {
+  const highlighted = await highlightCode(code, language);
 
   return (
-    <div className="code-block">
-      <div className="code-block-header">
-        <span>{label}</span>
-        <button aria-label={`Copy ${label}`} onClick={copyCode} type="button">
-          {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
-      <pre>
-        <code>{code}</code>
-      </pre>
+    <div className="relative w-full overflow-hidden rounded-lg border">
+      {showCopyButton ? (
+        <div className="absolute top-2 right-2 z-10">
+          <CopyButton text={code} />
+        </div>
+      ) : null}
+      <div
+        className="bg-muted/40 overflow-auto p-4 text-sm [&_code]:bg-transparent! [&_pre]:bg-transparent!"
+        dangerouslySetInnerHTML={{ __html: highlighted }}
+      />
     </div>
   );
 }

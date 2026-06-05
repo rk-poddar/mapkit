@@ -62,21 +62,22 @@ test.describe("example runtime smoke checks", () => {
     await expect(page.locator('[data-mapkit-engine="google-maps"]')).toHaveCount(0);
   });
 
-  test("Docs app renders the product showcase and live map preview", async ({ page }) => {
+  test("Docs app renders the product showcase grid", async ({ page }) => {
     await blockMapTiles(page);
     await page.goto(examples.docs);
 
     await expect(
       page.getByRole("heading", { name: "Beautiful maps, made simple" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Declarative map UI with real engine adapters." })).toBeVisible();
+    await expect(page.getByText("Active Users")).toBeVisible();
+    await expect(page.getByText("Central Park Loop")).toBeVisible();
 
-    const map = page.locator('[data-mapkit-engine="leaflet"]');
-    await expect(map).toBeVisible();
-    await expect(map).toHaveAttribute("data-mapkit-ready", "true", { timeout: 15_000 });
-    await expect(page.locator(".mapkit-leaflet-marker")).toHaveCount(3);
-    await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
-    await expect(page.getByText("map-kit registry map-controls")).toBeVisible();
+    const maps = page.locator('[data-mapkit-engine="maplibre"]');
+    await expect(maps.first()).toBeVisible();
+    await expect(maps.first()).toHaveAttribute("data-mapkit-ready", "true", { timeout: 20_000 });
+    await expect(maps).toHaveCount(6);
+    await expect(page.locator(".maplibregl-marker").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Fly to destination" })).toBeVisible();
   });
 
   test("Docs component pages expose install commands and source previews", async ({ page }) => {
@@ -90,13 +91,14 @@ test.describe("example runtime smoke checks", () => {
     await expect(page.getByRole("heading", { name: "Controlled Mode" })).toBeVisible();
 
     await page.goto(`${examples.docs}/components`);
-    await page.locator(".component-list-card").filter({ hasText: "Map Controls" }).click();
+    await page.locator("a[href='/components/map-controls']").click();
 
     await expect(page).toHaveURL(/\/components\/map-controls$/);
     await expect(page.getByRole("heading", { name: "Map Controls" })).toBeVisible();
     await expect(page.getByText("pnpm dlx @map-kit/cli add map-controls")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Source" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Copy Usage" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Copy code" }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "View Code" })).toBeVisible();
   });
 
   test("Docs installation and registry pages render guide content", async ({ page }) => {
@@ -122,7 +124,7 @@ test.describe("example runtime smoke checks", () => {
 
     await page.getByRole("button", { name: /Search/ }).click();
     await page.getByRole("searchbox", { name: "Search docs" }).fill("legend");
-    await page.getByRole("link", { name: "Search result: Map Legend" }).click();
+    await page.getByRole("button", { name: "Search result: Map Legend" }).click();
 
     await expect(page).toHaveURL(/\/components\/map-legend$/);
     await expect(page.getByRole("heading", { name: "Map Legend" })).toBeVisible();

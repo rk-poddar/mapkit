@@ -5,6 +5,11 @@ export type DocsNavLink = {
   type: "Page" | "Guide" | "Component" | "Block";
 };
 
+export type TocItem = {
+  slug: string;
+  title: string;
+};
+
 export const docsSidebarGroups: Array<{ label: string; links: DocsNavLink[] }> = [
   {
     label: "Basics",
@@ -97,6 +102,16 @@ export const headerNavItems = [
 
 export const docsSearchLinks = docsSidebarGroups.flatMap((group) => group.links);
 
-export function toTocHref(item: string) {
-  return `#${item.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export function tocFromTitles(titles: string[]): TocItem[] {
+  return titles.map((title) => ({
+    title,
+    slug: slugify(title),
+  }));
 }

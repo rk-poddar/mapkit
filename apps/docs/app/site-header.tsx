@@ -1,40 +1,33 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { DocsSearch } from "./docs-search";
-import { headerNavItems } from "./docs-nav";
+import { GitHubButton } from "@/components/github-button";
+import { Logo } from "@/components/logo";
+import { MainNav } from "@/components/main-nav";
+import { MobileNav } from "@/components/mobile-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
-  const pathname = usePathname();
-
+export function SiteHeader({ className }: { className?: string }) {
   return (
-    <header className="site-header">
-      <div className="site-header-left">
-        <a className="brand" href="/" aria-label="Map Kit home">
-          <span className="brand-mark">⌖</span>
-          mapkit
-        </a>
-        <nav aria-label="Primary navigation">
-          {headerNavItems.map((item) => {
-            const isActive = item.label === "Blocks" ? pathname === item.href : pathname.startsWith(item.match);
-
-            return (
-              <a aria-current={isActive ? "page" : undefined} href={item.href} key={item.href}>
-                {item.label}
-              </a>
-            );
-          })}
-        </nav>
-      </div>
-      <div className="site-header-right">
-        <DocsSearch />
-        <a className="github-link" href="https://github.com/rk-poddar/mapkit">
-          GitHub
-        </a>
-        <button aria-label="Toggle theme preview" className="theme-toggle" type="button">
-          ◐
-        </button>
-      </div>
+    <header
+      className={cn(
+        "border-b bg-background/85 supports-backdrop-filter:bg-background/70 sticky top-0 z-[100] h-14 w-full backdrop-blur",
+        className,
+      )}
+    >
+      <nav className="container flex h-14 items-center gap-2">
+        <MobileNav />
+        <Logo className="shrink-0" />
+        <Separator className="ml-1 hidden h-4 lg:block" orientation="vertical" />
+        <MainNav className="ml-1 hidden lg:flex" />
+        <div className="ml-auto flex items-center gap-1">
+          <DocsSearch />
+          <GitHubButton />
+          <ThemeToggle />
+        </div>
+      </nav>
     </header>
   );
 }

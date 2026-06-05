@@ -1,88 +1,119 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { docsSearchLinks } from "./docs-nav";
-import { componentDocs } from "./docs-data";
+import { ArrowDown, ArrowUp, CornerDownLeft, FileText, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { siteNavigation } from "@/lib/site-navigation";
+import { Button } from "@/components/ui/button";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Kbd } from "@/components/ui/kbd";
+import { cn } from "@/lib/utils";
 
-const docsLinks = [
-  ...docsSearchLinks,
-  ...componentDocs.map((component) => ({
-    description: component.description,
-    href: `/components/${component.slug}`,
-    label: component.name,
-    type: "Block" as const,
-  })),
-];
-
-export function DocsSearch() {
+export function DocsSearch({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const router = useRouter();
 
-  const results = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    if (!normalizedQuery) {
-      return docsLinks;
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setOpen((current) => !current);
+      }
     }
 
-    return docsLinks
-      .filter((item) =>
-        [item.label, item.description, item.type].some((value) =>
-          value.toLowerCase().includes(normalizedQuery),
-        ),
-      )
-      .slice(0, 6);
-  }, [query]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleSelect = (href: string) => {
+    setOpen(false);
+    router.push(href);
+  };
 
   return (
     <>
-      <button className="docs-search-trigger" onClick={() => setOpen(true)} type="button">
+      <Button
+        aria-label="Jump to pages, components, and docs"
+        className={cn(
+          "bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground hidden h-9 w-48 justify-start md:inline-flex",
+          className,
+        )}
+        onClick={() => setOpen(true)}
+        size="sm"
+        type="button"
+        variant="ghost"
+      >
+        <Search aria-hidden="true" className="size-3.5" />
         <span>Search...</span>
-        <kbd>⌘K</kbd>
-      </button>
-      {open ? (
-        <div className="command-overlay" role="presentation">
-          <button aria-label="Close search" className="command-scrim" onClick={() => setOpen(false)} type="button" />
-          <div aria-label="Docs command menu" className="command-dialog" role="dialog">
-            <div className="command-input-row">
-              <span>⌕</span>
-              <label className="sr-only" htmlFor="docs-search">
-                Search docs
-              </label>
-              <input
-                autoComplete="off"
-                autoFocus
-                id="docs-search"
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search..."
-                type="search"
-                value={query}
-              />
+        <Kbd className="ml-auto bg-transparent">⌘K</Kbd>
+      </Button>
+      <Button
+        aria-label="Open search"
+        className="md:hidden"
+        onClick={() => setOpen(true)}
+        size="icon-sm"
+        type="button"
+        variant="ghost"
+      >
+        <Search aria-hidden="true" className="size-4" />
+      </Button>
+      <CommandDialog
+        description="Jump to pages, components, and docs"
+        onOpenChange={setOpen}
+        open={open}
+        showCloseButton={false}
+        title="Search..."
+      >
+        <CommandInput placeholder="Search..." />
+        <CommandList>
+          <CommandEmpty className="text-muted-foreground py-8 text-sm">
+            <div className="flex flex-col items-center gap-1.5">
+              <FileText className="size-5 opacity-40" />
+              <span>No results found</span>
             </div>
-            <div className="command-list">
-              <span className="command-section-label">Pages</span>
-              {results.length ? (
-                results.map((item) => (
-                  <a aria-label={`Search result: ${item.label}`} href={item.href} key={item.href}>
-                    <span>↳</span>
-                    <strong>{item.label}</strong>
-                    <small>{item.type}</small>
-                  </a>
-                ))
-              ) : (
-                <p>No docs found.</p>
-              )}
-            </div>
-            <div className="command-footer">
-              <span>↑ ↓ navigate</span>
-              <span>↵ select</span>
-              <button onClick={() => setOpen(false)} type="button">
-                esc close
-              </button>
-            </div>
+          </CommandEmpty>
+          {siteNavigation.map((group) => (
+            <CommandGroup heading={group.title} key={group.title}>
+              {group.items.map((item) => (
+                <CommandItem key={item.href} onSelect={() => handleSelect(item.href)} value={item.title}>
+                  <item.icon aria-hidden="true" />
+                  <span>{item.title}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ))}
+        </CommandList>
+        <div className="text-muted-foreground/80 flex items-center justify-between border-t p-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="flex items-center gap-1.5">
+              <Kbd>
+                <ArrowUp className="size-3" />
+              </Kbd>
+              <Kbd>
+                <ArrowDown className="size-3" />
+              </Kbd>
+              <span>navigate</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Kbd>
+                <CornerDownLeft className="size-3" />
+              </Kbd>
+              <span>select</span>
+            </span>
           </div>
+          <span className="flex items-baseline gap-1.5">
+            <Kbd>esc</Kbd>
+            <span>close</span>
+          </span>
         </div>
-      ) : null}
+      </CommandDialog>
     </>
   );
 }
